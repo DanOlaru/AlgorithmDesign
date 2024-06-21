@@ -2,7 +2,7 @@
 #include <fstream>
 #include "string"
 
-#include "recursiveSolution.h"
+#include "stringDistance.h"
 
 using namespace std;
 
@@ -11,7 +11,6 @@ using namespace std;
 int main(int argc, const char *argv[])
 {
 
-    cout<< "FML" << endl;
     // string line;
     // fstream inputFile("resources/StringsInput.txt");
 
@@ -28,10 +27,10 @@ int main(int argc, const char *argv[])
     //     cout << "Unable to open file " << inputFile.good() << endl;
     // }
 
-    char *target = "the rain";
-    char *search = "ye rain";
+    char *target = "theXrainYoYMP";
+    char *search = "yePrainBPZMP";
 
-    int cost = string_compare(target, search, 9, 8);
+    int cost = string_compare_recursive(target, search, strlen(target), strlen(search));
 
     cout << "cost == " << cost << endl;
 
