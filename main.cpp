@@ -12,23 +12,25 @@ cell m[MAXLEN + 1][MAXLEN + 1];
 
 int main(int argc, const char *argv[])
 {
-    char *target = " thou shalt not";
-    char *search = " you should not";
+    char *target = " The quick brown fox jumps over the lazy dog near the river bank, swiftly and silently.";
+    char *search = " The quick brown fox jumps clover the lazy dog near the river bank, swiftly and silently.";
 
-    // int cost = string_compare_recursive(target, search, strlen(target), strlen(search));
-    int cost = string_compare(target, search, m);
+    char* prepended_target = prepend_space(target);
+    char* prepended_search = prepend_space(search);
+
+    // int cost = string_compare_recursive(prepended_target, prepended_search, strlen(prepended_target), strlen(prepended_search));
+    int cost = string_compare(prepended_target, prepended_search, m);
 
     cout << "cost == " << cost << endl;
-    // print_cost_matrix(target, search);
-    print_parent_matrix(target, search);
+    // print_cost_matrix(prepended_target, prepended_search);
+    // print_parent_matrix(prepended_target, prepended_search);
 
-// printf("len s%d\n", strlen(search));
-// printf("len T%d\n", strlen(target));
-
-    reconstruct_path(target, search, strlen(search)-1, strlen(target)-1, m);
+    reconstruct_path(prepended_target, prepended_search, strlen(prepended_search) - 1, strlen(prepended_target) - 1, m);
 
     return 0;
 }
+
+
 
 void print_cost_matrix(char *target, char *search)
 {

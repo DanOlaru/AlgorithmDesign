@@ -14,6 +14,23 @@ typedef struct
     int parent;
 } cell;
 
+
+char* prepend_space(char *input)
+{
+    if (input[0] == ' ')
+    {
+        return input;
+    }
+    else
+    {
+        char *prepended = new char[strlen(input) + 2];
+        strcpy(prepended, " ");
+        strcat(prepended, input);
+
+        return prepended;
+    }
+}
+
 int indel(char c)
 {
     return (1);
