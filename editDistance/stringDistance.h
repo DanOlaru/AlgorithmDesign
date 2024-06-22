@@ -1,4 +1,5 @@
 #include "string"
+#include <cstring>
 #include <iostream>
 
 #define MATCH 0
