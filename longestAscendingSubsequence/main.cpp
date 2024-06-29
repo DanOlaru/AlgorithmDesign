@@ -34,7 +34,8 @@ int main(int argc, char const *argv[])
     }
   }
 
-  printMaximumsMatrix(subsequences, length);
+  print_maximums_matrix(sequence, subsequences, length);
+  determine_max_length_and_display_sequence(sequence, subsequences, length);
 
   return 0;
 }

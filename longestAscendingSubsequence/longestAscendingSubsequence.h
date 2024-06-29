@@ -3,9 +3,16 @@
 #include <stdio.h>
 
 typedef int SubsequencesMatrix[2][MAXLEN];
+typedef int IntegerSequence[MAXLEN];
 
-void printMaximumsMatrix(SubsequencesMatrix matrix, int len)
+void print_maximums_matrix(IntegerSequence sequence, SubsequencesMatrix matrix, int len)
 {
+
+  for (int i = 0; i < len; i++)
+  {
+    printf("%d, ", sequence[i]);
+  }
+  printf("\n");
 
   for (int i = 0; i < len; i++)
   {
@@ -18,5 +25,35 @@ void printMaximumsMatrix(SubsequencesMatrix matrix, int len)
   {
     printf("%d, ", matrix[1][i]);
   }
+  printf("\n");
+}
+
+void determine_max_length_and_display_sequence(IntegerSequence input, SubsequencesMatrix matrix, int len)
+{
+
+  int max = 0, maxIndex = 0;
+  int resultStack[MAXLEN];
+
+  for (int i = 0; i < len; i++)
+  {
+    if (matrix[0][i] > matrix[0][maxIndex])
+    {
+      maxIndex = i;
+    }
+  }
+
+  printf("Result: \n");
+  int cursor = maxIndex;
+  int stackTop = -1;
+  while (cursor >= 0) {
+    resultStack[++stackTop] = input[cursor];
+    cursor = matrix[1][cursor];
+  }
+
+  //read stack
+  for (;stackTop > 0;) {
+    printf("%d, ", resultStack[stackTop--]);
+  }
+
   printf("\n");
 }
