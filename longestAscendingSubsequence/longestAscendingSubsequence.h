@@ -1,9 +1,50 @@
 #define MAXLEN 100
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 typedef int SubsequencesMatrix[2][MAXLEN];
 typedef int IntegerSequence[MAXLEN];
+
+typedef struct InputSequence
+{
+  int sequence[MAXLEN];
+  int length;
+};
+
+InputSequence read_from_file()
+{
+  FILE *file = fopen("inputSequence.txt", "r");
+
+  InputSequence data;
+
+  // if (file == NULL)
+  // {
+  //   perror("Failed to open file");
+  //   return;
+  // }
+
+  int index = -1;
+  char line[256];
+  const char delimiter[] = " ";
+
+  while (fgets(line, sizeof(line), file))
+  {
+    char *token = strtok(line, delimiter);
+
+    while (token != NULL) {
+        data.sequence[++index] = atoi(token);
+        token = strtok(NULL, delimiter); // Get the next token
+    }
+  }
+
+  data.length = index;
+
+  fclose(file);
+
+  return data;
+}
 
 void print_maximums_matrix(IntegerSequence sequence, SubsequencesMatrix matrix, int len)
 {
@@ -45,13 +86,15 @@ void determine_max_length_and_display_sequence(IntegerSequence input, Subsequenc
   printf("Result: \n");
   int cursor = maxIndex;
   int stackTop = -1;
-  while (cursor >= 0) {
+  while (cursor >= 0)
+  {
     resultStack[++stackTop] = input[cursor];
     cursor = matrix[1][cursor];
   }
 
-  //read stack
-  for (;stackTop > 0;) {
+  // read stack
+  for (; stackTop > 0;)
+  {
     printf("%d, ", resultStack[stackTop--]);
   }
 

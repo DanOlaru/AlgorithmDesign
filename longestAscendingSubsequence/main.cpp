@@ -1,16 +1,20 @@
 #include "longestAscendingSubsequence.h"
+#include <stdio.h>
 
 int main(int argc, char const *argv[])
 {
-  int sequence[MAXLEN] = {2, 4, 3, 5, 1, 7, 6, 9, 8};
-  int length = 0;
+  InputSequence sequence_from_file = read_from_file();
+
+  // if (*sequence_from_file) {
+  //   printf("File read error \n");
+  //   return -1;
+  // }
+
   SubsequencesMatrix subsequences;
 
-  for (int i = 0; sequence[i] != '\0'; i++)
-  {
-    length++;
-    // printf("element %d = %d \n", i, sequence[i]);
 
+  for (int i = 0; sequence_from_file.sequence[i] != '\0'; i++)
+  {
     if (i == 0)
     {
       subsequences[0][i] = 1;  // subsequence max length
@@ -22,7 +26,7 @@ int main(int argc, char const *argv[])
 
       for (int j = 0; j < i; j++)
       {
-        if ((sequence[j] < sequence[i]) && (subsequences[0][j] >= maxLen))
+        if ((sequence_from_file.sequence[j] < sequence_from_file.sequence[i]) && (subsequences[0][j] >= maxLen))
         {
           maxLen = subsequences[0][j] + 1;
           maxIndex = j;
@@ -34,8 +38,8 @@ int main(int argc, char const *argv[])
     }
   }
 
-  print_maximums_matrix(sequence, subsequences, length);
-  determine_max_length_and_display_sequence(sequence, subsequences, length);
+  print_maximums_matrix(sequence_from_file.sequence, subsequences, sequence_from_file.length);
+  determine_max_length_and_display_sequence(sequence_from_file.sequence, subsequences, sequence_from_file.length);
 
   return 0;
 }
