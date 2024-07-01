@@ -93,7 +93,7 @@ void determine_max_length_and_display_sequence(IntegerSequence input, Subsequenc
   }
 
   // read stack
-  for (; stackTop > 0;)
+  for (; stackTop >= 0;)
   {
     printf("%d, ", resultStack[stackTop--]);
   }
