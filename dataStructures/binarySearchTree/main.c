@@ -7,8 +7,7 @@ int main(int argc, char const *argv[])
   file = fopen("input.txt", "r");
   char line[256];
 
-  BinarySearchTree *tree = (BinarySearchTree *)malloc(sizeof(BinarySearchTree));
-  tree->item = 0;
+  BinarySearchTree *tree = NULL;
 
   if (file != NULL)
   {
@@ -19,13 +18,21 @@ int main(int argc, char const *argv[])
     }
     // traverse_tree(tree);
 
-    BinarySearchTree *found = search_tree(tree, 68);
+    // // BinarySearchTree *found = search_tree(tree, 68);
+    // BinarySearchTree *found = search_tree(tree, 5);
     // printf("FOUND %d \n", found->item);
 
-    // insert_into_tree(&tree, 70, NULL);
+    printf("IS BINARY %b \n", is_binary_tree(tree));
+    // // insert_into_tree(&tree, 70, NULL);
 
-    delete_from_tree(&tree, 68);
+
+    // // delete_from_tree(&tree, 68);
+    // delete_from_tree(&tree, 4);
+    delete_from_tree(&tree, 8);
     traverse_tree(tree);
+    printf("AFTER DELETE \n");
+    printf("IS BINARY %b \n", is_binary_tree(tree));
+    // // delete_from_tree(&tree, 99);
 
     fclose(file);
   }

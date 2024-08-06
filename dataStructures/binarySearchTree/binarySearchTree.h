@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef int item_type;
 
@@ -89,63 +90,136 @@ void insert_into_tree(BinarySearchTree **tree, item_type element, BinarySearchTr
   }
 }
 
+// BinarySearchTree *get_parent_branch_pointer(BinarySearchTree *node)
+// {
+//   if ((node->parent)->item > node->item)
+//   {
+//     return (node->parent)->left;
+//   }
+//   else
+//   {
+//     return (node->parent)->right;
+//   }
+// }
+
+bool is_binary_tree(BinarySearchTree *tree)
+{
+  if (tree == NULL)
+    return true;
+
+  bool greater_than_left = true;
+  if (tree->left != NULL)
+  {
+    greater_than_left = tree->item > (tree->left)->item;
+  }
+
+  bool less_than_right = true;
+  if (tree->right != NULL)
+  {
+    less_than_right = tree->item < (tree->right)->item;
+  }
+
+  return greater_than_left && less_than_right && is_binary_tree(tree->left) && is_binary_tree(tree->right);
+}
+
 void delete_from_tree(BinarySearchTree **tree, item_type element)
 {
-  if ((*tree)->item == element)
-  {
-    // Delete this
-    BinarySearchTree *current_node;
-    current_node = *tree;
+  // Delete this
+  BinarySearchTree *current_node;
+  current_node = search_tree(*tree, element);
 
-    if ((*tree)->left == NULL && (*tree)->right == NULL)
+  if (current_node != NULL)
+  {
+    if (current_node->left == NULL && current_node->right == NULL)
+    // if (current_node->left == current_node->right == NULL)
     {
-      // end node
-      *tree = NULL; // update up the parent record
+      // update the parent record
+      if ((current_node->parent)->item > element)
+      {
+        (current_node->parent)->left = NULL;
+      }
+      else
+      {
+        (current_node->parent)->right = NULL;
+      }
+      // BinarySearchTree *branch = get_parent_branch_pointer(current_node);
+      // *branch = NULL;
     }
-    else if ((*tree)->left == NULL && (*tree)->right != NULL)
+    else if (current_node->left == NULL && current_node->right != NULL)
     {
       // single-child node — RIGHT
-      *tree = (*tree)->right; // update up the parent record
+      if ((current_node->parent)->item > element)
+      {
+        (current_node->parent)->left = current_node->right;
+      }
+      else
+      {
+        (current_node->parent)->right = current_node->right;
+      }
+      (current_node->right)->parent = current_node->parent;
     }
-    else if ((*tree)->left != NULL && (*tree)->right == NULL)
+    else if (current_node->left != NULL && current_node->right == NULL)
     {
       // single-child node — LEFT
-      *tree = (*tree)->left; // update up the parent record
+      if ((current_node->parent)->item > element)
+      {
+        (current_node->parent)->left = current_node->left;
+      }
+      else
+      {
+        (current_node->parent)->right = current_node->left;
+      }
+      (current_node->left)->parent = current_node->parent;
     }
     else
     {
       // two children — obtain minimum larger than and replace
-      BinarySearchTree *next_minimum = find_minimum((*tree)->right);
+      BinarySearchTree *next_minimum = find_minimum((current_node)->right);
 
-      // remove minimum from position where found
-      if (next_minimum->right != NULL)
+      // uncouple minimum out from position where found
+      if (next_minimum->left == NULL && next_minimum->right == NULL)
       {
-        (next_minimum->right)->parent = next_minimum->parent;
-        (next_minimum->parent)->left = next_minimum->right;
+        if ((next_minimum->parent)->item > next_minimum->item)
+        {
+          // left subtree
+          (next_minimum->parent)->left = NULL;
+        }
+        else
+        {
+          // right subtree
+          (next_minimum->parent)->right = NULL;
+        }
       }
       else
       {
-        (next_minimum->parent)->left = NULL;
+        // minimum has right subtree
+        (next_minimum->parent)->left = next_minimum->right;
+        (next_minimum->right)->parent = next_minimum->parent;
       }
 
+      // substitute minimum for current node
+      if ((current_node->parent)->item > current_node->item)
+      {
+        (current_node->parent)->left = next_minimum;
+      }
+      else
+      {
+        (current_node->parent)->right = next_minimum;
+      }
       next_minimum->parent = current_node->parent;
       next_minimum->left = current_node->left;
-      next_minimum->right = current_node->right;
-      current_node->parent->right = next_minimum;
 
-      *tree = next_minimum; // update the parent record
+      if (current_node->left)
+      {
+        (current_node->left)->parent = next_minimum;
+      }
+
+      next_minimum->right = current_node->right;
+      if (current_node->right) {
+        (current_node->right)->parent = next_minimum; //???
+      }
     }
 
     free(current_node);
-    return;
-  }
-
-  if ((*tree)->item > element)
-  {
-    delete_from_tree(&((*tree)->left), element);
-  }
-  else
-  {
-    delete_from_tree(&((*tree)->right), element);
   }
 }
