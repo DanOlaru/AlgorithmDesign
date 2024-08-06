@@ -90,17 +90,17 @@ void insert_into_tree(BinarySearchTree **tree, item_type element, BinarySearchTr
   }
 }
 
-// BinarySearchTree *get_parent_branch_pointer(BinarySearchTree *node)
-// {
-//   if ((node->parent)->item > node->item)
-//   {
-//     return (node->parent)->left;
-//   }
-//   else
-//   {
-//     return (node->parent)->right;
-//   }
-// }
+BinarySearchTree **get_parent_branch_pointer(BinarySearchTree *node)
+{
+  if ((node->parent)->item > node->item)
+  {
+    return &((node->parent)->left);
+  }
+  else
+  {
+    return &((node->parent)->right);
+  }
+}
 
 bool is_binary_tree(BinarySearchTree *tree)
 {
@@ -130,45 +130,23 @@ void delete_from_tree(BinarySearchTree **tree, item_type element)
 
   if (current_node != NULL)
   {
+    BinarySearchTree **current_node_parent_branch = get_parent_branch_pointer(current_node);
     if (current_node->left == NULL && current_node->right == NULL)
     // if (current_node->left == current_node->right == NULL)
     {
       // update the parent record
-      if ((current_node->parent)->item > element)
-      {
-        (current_node->parent)->left = NULL;
-      }
-      else
-      {
-        (current_node->parent)->right = NULL;
-      }
-      // BinarySearchTree *branch = get_parent_branch_pointer(current_node);
-      // *branch = NULL;
+      *current_node_parent_branch = NULL;
     }
     else if (current_node->left == NULL && current_node->right != NULL)
     {
       // single-child node — RIGHT
-      if ((current_node->parent)->item > element)
-      {
-        (current_node->parent)->left = current_node->right;
-      }
-      else
-      {
-        (current_node->parent)->right = current_node->right;
-      }
+      *current_node_parent_branch = current_node->right;
       (current_node->right)->parent = current_node->parent;
     }
     else if (current_node->left != NULL && current_node->right == NULL)
     {
       // single-child node — LEFT
-      if ((current_node->parent)->item > element)
-      {
-        (current_node->parent)->left = current_node->left;
-      }
-      else
-      {
-        (current_node->parent)->right = current_node->left;
-      }
+      *current_node_parent_branch = current_node->left;
       (current_node->left)->parent = current_node->parent;
     }
     else
@@ -179,16 +157,9 @@ void delete_from_tree(BinarySearchTree **tree, item_type element)
       // uncouple minimum out from position where found
       if (next_minimum->left == NULL && next_minimum->right == NULL)
       {
-        if ((next_minimum->parent)->item > next_minimum->item)
-        {
-          // left subtree
-          (next_minimum->parent)->left = NULL;
-        }
-        else
-        {
-          // right subtree
-          (next_minimum->parent)->right = NULL;
-        }
+
+        BinarySearchTree **next_minimum_parent_branch = get_parent_branch_pointer(next_minimum);
+        *next_minimum_parent_branch = NULL;
       }
       else
       {
@@ -198,14 +169,7 @@ void delete_from_tree(BinarySearchTree **tree, item_type element)
       }
 
       // substitute minimum for current node
-      if ((current_node->parent)->item > current_node->item)
-      {
-        (current_node->parent)->left = next_minimum;
-      }
-      else
-      {
-        (current_node->parent)->right = next_minimum;
-      }
+      *current_node_parent_branch = next_minimum;
       next_minimum->parent = current_node->parent;
       next_minimum->left = current_node->left;
 
@@ -215,7 +179,8 @@ void delete_from_tree(BinarySearchTree **tree, item_type element)
       }
 
       next_minimum->right = current_node->right;
-      if (current_node->right) {
+      if (current_node->right)
+      {
         (current_node->right)->parent = next_minimum; //???
       }
     }

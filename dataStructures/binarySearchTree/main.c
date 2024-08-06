@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
 
     // // delete_from_tree(&tree, 68);
     // delete_from_tree(&tree, 4);
-    delete_from_tree(&tree, 8);
+    delete_from_tree(&tree, 10);
     traverse_tree(tree);
     printf("AFTER DELETE \n");
     printf("IS BINARY %b \n", is_binary_tree(tree));
