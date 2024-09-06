@@ -72,6 +72,7 @@ char *trimWhitespace(char *str)
   return str;
 }
 
+// TODO: this is wrong but it works for the time being
 int hash_fresh(char *input)
 {
   int hash = 0;
@@ -80,6 +81,13 @@ int hash_fresh(char *input)
   {
     hash += get_char_val(input[i]);
   }
+
+  return hash;
+}
+
+int smart_hash(char *input, char outgoing_char, char incoming_char, int prev_hash)
+{
+  int hash = prev_hash + get_char_val(incoming_char) - get_char_val(outgoing_char);
 
   return hash;
 }
@@ -119,7 +127,6 @@ char *substring(const char *original, int start, int end)
 
 int check_match(char *first, char *second)
 {
-
   return strcmp(first, second);
 }
 
@@ -129,12 +136,22 @@ char search_for(char *text_string, char *quarry)
   int quarry_hash = hash_fresh(quarry);
 
   printf("quarry hash = %d \n", quarry_hash);
+  int hash_val = 0;
 
   for (int i = 0; i < length_of_difference; i++)
   {
     char *current_substring = substring(text_string, i, i + strlen(quarry));
 
     printf("substring ='%s', w hash = %d \n", current_substring, hash_fresh(current_substring));
+
+    if (i == 0)
+    {
+      hash_val = hash_fresh(current_substring);
+    }
+    else
+    {
+      hash_val = smart_hash(current_substring, text_string[i-1], text_string[i + strlen(quarry)], hash_val);
+    }
 
     if (hash_fresh(current_substring) == quarry_hash)
     {
