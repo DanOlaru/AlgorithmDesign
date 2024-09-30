@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <ctype.h> // For isspace() function
 
+#define BASE 57
+
 char **read_strings_from_file()
 {
   FILE *file = fopen("input.txt", "r");
@@ -72,24 +74,35 @@ char *trimWhitespace(char *str)
   return str;
 }
 
-// TODO: this is wrong but it works for the time being
-int hash_fresh(char *input)
+unsigned long base_to_power(int power)
 {
-  int hash = 0;
+  unsigned long result = 1;
+
+  for (int i = 1; i <= power; i++)
+  {
+    result = result * BASE;
+  }
+
+  return result;
+}
+
+int hash_fresh(char *input, int M)
+{
+  unsigned long hash = 0;
 
   for (int i = 0; i < strlen(input); i++)
   {
-    hash += get_char_val(input[i]);
+    hash += get_char_val(input[i]) * base_to_power(strlen(input) - i - 1);
   }
 
-  return hash;
+  return hash % M;
 }
 
-int smart_hash(char *input, char outgoing_char, char incoming_char, int prev_hash)
+int smart_hash(char *input, char outgoing_char, char incoming_char, int prev_hash, int M)
 {
-  int hash = prev_hash + get_char_val(incoming_char) - get_char_val(outgoing_char);
+  unsigned long hash = BASE * (prev_hash - get_char_val(outgoing_char) * base_to_power(strlen(input) - 1)) + get_char_val(incoming_char);
 
-  return hash;
+  return hash % M;
 }
 
 char *substring(const char *original, int start, int end)
@@ -132,8 +145,9 @@ int check_match(char *first, char *second)
 
 char search_for(char *text_string, char *quarry)
 {
+  int M = strlen(quarry);
   int length_of_difference = strlen(text_string) - strlen(quarry) + 1;
-  int quarry_hash = hash_fresh(quarry);
+  int quarry_hash = hash_fresh(quarry, M);
 
   printf("quarry hash = %d \n", quarry_hash);
   int hash_val = 0;
@@ -142,20 +156,20 @@ char search_for(char *text_string, char *quarry)
   {
     char *current_substring = substring(text_string, i, i + strlen(quarry));
 
-    printf("substring ='%s', w hash = %d \n", current_substring, hash_fresh(current_substring));
+    printf("substring ='%s', w hash = %d \n", current_substring, hash_fresh(current_substring, M));
 
     if (i == 0)
     {
-      hash_val = hash_fresh(current_substring);
+      hash_val = hash_fresh(current_substring, M);
     }
     else
     {
-      hash_val = smart_hash(current_substring, text_string[i-1], text_string[i + strlen(quarry)], hash_val);
+      hash_val = smart_hash(current_substring, text_string[i - 1], text_string[i + strlen(quarry)], hash_val, M);
     }
 
-    if (hash_fresh(current_substring) == quarry_hash)
+    if (hash_fresh(current_substring, M) == quarry_hash)
     {
-      printf("potential match %s\n", current_substring);
+      printf("potential match '%s'\n", current_substring);
       if (check_match(current_substring, quarry) == 0)
       {
         printf("match confirmed for '%s'\n", current_substring);
