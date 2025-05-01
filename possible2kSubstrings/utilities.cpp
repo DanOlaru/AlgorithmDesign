@@ -46,13 +46,13 @@ void addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
     bool found = false;
     int numberOfNodes = treeCursor->next.size();
 
-
     if (numberOfNodes > 0)
     {
       while ((j + 1 < numberOfNodes))
       {
         j++;
-        if ( (treeCursor->next.at(j)->letter == suffix.at(i))) {
+        if ((treeCursor->next.at(j)->letter == suffix.at(i)))
+        {
           found = true;
           break;
         }
@@ -71,14 +71,12 @@ void addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
       (treeCursor->next).push_back(make_unique<SuffixTrie>(suffix.at(i)));
       treeCursor = (treeCursor->next).back().get();
     }
-  }
 
-  // if (i == suffix.size() - 1)
-  // {
-  //     treeCursor->isFinal = true;
-  //     //  make node final
-  // }
-  // }
+    if (i == suffix.size() - 2)
+    {
+      treeCursor->isFinal = true;
+    }
+  }
 }
 
 void buildSuffixTrie(string substring, unique_ptr<SuffixTrie> &root)

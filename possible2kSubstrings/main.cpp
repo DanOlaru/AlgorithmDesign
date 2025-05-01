@@ -4,7 +4,6 @@
 
 #include <vector>
 #include <string>
-// #include "possible2kSubstrings.h"
 #include "utilities.cpp"
 
 using namespace std;
