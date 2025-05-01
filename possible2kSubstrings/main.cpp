@@ -4,15 +4,23 @@
 
 #include <vector>
 #include <string>
+// #include "possible2kSubstrings.h"
+#include "utilities.cpp"
 
 using namespace std;
 
 int main(int argc, char const *argv[])
 {
-    cout << "yes hello" << endl;
-    const vector<string> substrings = {"ACB", "CAA", "CCB", "ACA", "CAC", "BCA"};
-    int k = 3; // length of initial substrings
-    // TODO: read initial k-length substrings
+  const vector<string> substrings = readFromFile();
+  int k = substrings.at(0).size() - 1; // length of initial substrings
+  // cout << "size " << substrings.size() << endl;
+  unique_ptr<SuffixTrie> root = make_unique<SuffixTrie>('r');
+
+  // TODO: build suffix trie
+  for (int i = 0; i < substrings.size(); i++)
+  {
+    buildSuffixTrie(substrings.at(i), root);
+  }
 
     for (int i = 0; i < substrings.size(); i++)
     {
