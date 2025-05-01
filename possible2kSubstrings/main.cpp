@@ -14,9 +14,9 @@ int main(int argc, char const *argv[])
   const vector<string> substrings = readFromFile();
   int k = substrings.at(0).size() - 1; // length of initial substrings
   // cout << "size " << substrings.size() << endl;
-  unique_ptr<SuffixTrie> root = make_unique<SuffixTrie>('r');
+  auto root = make_unique<SuffixTrie>('r');
 
-  // TODO: build suffix trie
+  // build suffix trie
   for (int i = 0; i < substrings.size(); i++)
   {
     buildSuffixTrie(substrings.at(i), root);
