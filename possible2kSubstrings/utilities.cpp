@@ -43,7 +43,7 @@ SuffixTrie* addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
 
   SuffixTrie *treeCursor = root.get();
 
-  for (int i = 0; i < suffix.size() - 1; i++)
+  for (int i = 0; i < suffix.size(); i++)
   {
     cout << "level of tree " << treeCursor->letter << endl;
     int j = -1;
@@ -76,7 +76,7 @@ SuffixTrie* addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
       treeCursor = (treeCursor->children).back().get();
     }
 
-    if (i == suffix.size() - 2)
+    if (i == suffix.size() - 1)
     {
       treeCursor->isFinal = true;
     }
@@ -89,7 +89,7 @@ void addTermToSuffixTrie(string substring, unique_ptr<SuffixTrie> &root)
 {
   SuffixTrie* lastFullString;
 
-  for (int i = 0; i < substring.size() - 1; i++)
+  for (int i = 0; i < substring.size(); i++)
   {
     SuffixTrie* lastElementInSubtree = addToTrie(substring.substr(i, substring.size()), root);
 
@@ -111,7 +111,7 @@ void buildTrie(vector<string> substrings, unique_ptr<SuffixTrie> &root) {
 }
 
 void combineAndCheckSubstrings(vector<string> substrings) {
-  int k = substrings.at(0).size() - 1; // length of initial substrings
+  int k = substrings.at(0).size(); // length of initial substrings
 
   for (int i = 0; i < substrings.size(); i++)
   {
