@@ -24,4 +24,4 @@ struct SuffixTrie {
 
 bool checkAllBorderSpanningSubstringsAreInLibrary(string *searchCandidate, int substringLength, const vector<string> *substrings);
 vector<string> readFromFile();
-void buildSuffixTrie(string substring, unique_ptr<SuffixTrie> &existingTrie);
+void addTermToSuffixTrie(string substring, unique_ptr<SuffixTrie> &existingTrie);

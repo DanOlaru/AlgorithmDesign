@@ -18,7 +18,7 @@ int main(int argc, char const *argv[])
   // build suffix trie
   for (int i = 0; i < substrings.size(); i++)
   {
-    buildSuffixTrie(substrings.at(i), root);
+    addTermToSuffixTrie(substrings.at(i), root);
   }
 
     for (int i = 0; i < substrings.size(); i++)

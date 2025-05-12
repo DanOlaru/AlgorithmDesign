@@ -81,7 +81,7 @@ SuffixTrie* addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
   return treeCursor;
 }
 
-void buildSuffixTrie(string substring, unique_ptr<SuffixTrie> &root)
+void addTermToSuffixTrie(string substring, unique_ptr<SuffixTrie> &root)
 {
   SuffixTrie* lastFullString;
 
