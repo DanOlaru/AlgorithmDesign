@@ -98,3 +98,46 @@ void addTermToSuffixTrie(string substring, unique_ptr<SuffixTrie> &root)
     cout << endl;
   }
 }
+
+void buildTrie(vector<string> substrings, unique_ptr<SuffixTrie> &root) {
+  for (int i = 0; i < substrings.size(); i++)
+  {
+    addTermToSuffixTrie(substrings.at(i), root);
+  }
+}
+
+void combineAndCheckSubstrings(vector<string> substrings) {
+  int k = substrings.at(0).size() - 1; // length of initial substrings
+
+  for (int i = 0; i < substrings.size(); i++)
+  {
+    for (int j = 0; j < substrings.size(); j++)
+    {
+      string candidate = substrings[i] + substrings[j];
+      checkAllBorderSpanningSubstringsAreInLibrary(&candidate, k, &substrings);
+    }
+  }
+}
+
+bool checkAllBorderSpanningSubstringsAreInLibrary(string *searchCandidate, int substringLength, const vector<string> *substrings)
+{
+  bool found = false;
+  for (int start = 1; start < substringLength; start++)
+  {
+    const string borderSpanningSubstring = (*searchCandidate).substr(start, substringLength);
+
+    for (int l = 0; l < (*substrings).size(); l++)
+    {
+      // TODO: compare with initial substrings, print match if any
+      if ((*substrings).at(l) == borderSpanningSubstring)
+      {
+        // cout << " *found* ";
+        found = true;
+        break;
+      }
+    }
+    // if (found) break;
+    // cout << "|";
+  }
+  return found;
+}
