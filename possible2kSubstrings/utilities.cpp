@@ -20,6 +20,10 @@ vector<string> readFromFile()
   {
     while (fgets(line, sizeof(line), file))
     {
+      char *newline = strchr(line, '\n');
+      if (newline) {
+          *newline = '\0';
+      }
       results.push_back(line);
     }
 
