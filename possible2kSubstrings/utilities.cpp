@@ -33,7 +33,7 @@ vector<string> readFromFile()
   return results;
 }
 
-void addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
+SuffixTrie* addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
 {
   cout << "suffix " << suffix;
 
@@ -44,14 +44,14 @@ void addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
     cout << "level of tree " << treeCursor->letter << endl;
     int j = -1;
     bool found = false;
-    int numberOfNodes = treeCursor->next.size();
+    int numberOfNodes = treeCursor->children.size();
 
     if (numberOfNodes > 0)
     {
       while ((j + 1 < numberOfNodes))
       {
         j++;
-        if ((treeCursor->next.at(j)->letter == suffix.at(i)))
+        if ((treeCursor->children.at(j)->letter == suffix.at(i)))
         {
           found = true;
           break;
@@ -61,15 +61,15 @@ void addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
 
     if (found)
     {
-      cout << " found elem at " << j << "==" << treeCursor->next.at(j)->letter << " moving one level below" << endl;
-      treeCursor = treeCursor->next.at(j).get();
+      cout << " found elem at " << j << "==" << treeCursor->children.at(j)->letter << " moving one level below" << endl;
+      treeCursor = treeCursor->children.at(j).get();
     }
     else
     {
       cout << " not found on level inserting " << suffix.at(i) << endl;
 
-      (treeCursor->next).push_back(make_unique<SuffixTrie>(suffix.at(i)));
-      treeCursor = (treeCursor->next).back().get();
+      (treeCursor->children).push_back(make_unique<SuffixTrie>(suffix.at(i)));
+      treeCursor = (treeCursor->children).back().get();
     }
 
     if (i == suffix.size() - 2)
@@ -77,13 +77,24 @@ void addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
       treeCursor->isFinal = true;
     }
   }
+
+  return treeCursor;
 }
 
 void buildSuffixTrie(string substring, unique_ptr<SuffixTrie> &root)
 {
+  SuffixTrie* lastFullString;
+
   for (int i = 0; i < substring.size() - 1; i++)
   {
-    addToTrie(substring.substr(i, substring.size()), root);
+    SuffixTrie* lastElementInSubtree = addToTrie(substring.substr(i, substring.size()), root);
+
+    if (i == 0)
+    {
+      lastFullString = lastElementInSubtree;
+    } else if (i==1) {
+      lastFullString->longestProperSuffix = unique_ptr<SuffixTrie>(lastElementInSubtree);
+    }
     cout << endl;
   }
 }

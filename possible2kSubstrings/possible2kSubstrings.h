@@ -12,7 +12,9 @@ using namespace std;
 struct SuffixTrie {
     char letter;
     bool isFinal;
-    vector<unique_ptr<SuffixTrie>> next;
+    vector<unique_ptr<SuffixTrie>> children;
+
+    unique_ptr<SuffixTrie> longestProperSuffix;
 
     SuffixTrie(char c, bool final = false) : letter(c), isFinal(final) {}
 };
