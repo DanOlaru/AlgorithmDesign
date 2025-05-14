@@ -100,7 +100,7 @@ void addTermToSuffixTrie(string substring, unique_ptr<SuffixTrie> &root)
     }
     else if (i == 1)
     {
-      lastFullString->longestProperSuffix = unique_ptr<SuffixTrie>(lastElementInSubtree);
+      lastFullString->longestProperSuffix = lastElementInSubtree;
     }
     // cout << endl;
   }
@@ -206,7 +206,7 @@ bool checkAllBorderSpanningSubstringsAreInLibraryUsingTrie(string *searchCandida
       if (cursorOnSubstring == borderSpanningSubstring.size())
       {
         endOfSearchStringReached = true;
-        treeCursor = treeCursor->longestProperSuffix.get();
+        treeCursor = treeCursor->longestProperSuffix;
         cursorOnSubstring = substringLength - 1;
         // cout << "substring " << borderSpanningSubstring << " was found, moving to immediate suffix " << endl;
       }

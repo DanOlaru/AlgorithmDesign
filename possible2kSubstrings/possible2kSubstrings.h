@@ -14,7 +14,7 @@ struct SuffixTrie {
     bool isFinal;
     vector<unique_ptr<SuffixTrie>> children;
 
-    unique_ptr<SuffixTrie> longestProperSuffix;
+    SuffixTrie* longestProperSuffix = nullptr;
 
     SuffixTrie(char c, bool final = false) : letter(c), isFinal(final) {}
 };
