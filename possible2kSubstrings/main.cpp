@@ -16,5 +16,5 @@ int main(int argc, char const *argv[])
   // build suffix trie
   buildTrie(substrings, root);
 
-  combineAndCheckSubstrings(substrings);
+  combineAndCheckSubstrings(substrings, root);
 }

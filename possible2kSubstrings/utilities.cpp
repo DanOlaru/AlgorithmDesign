@@ -21,8 +21,9 @@ vector<string> readFromFile()
     while (fgets(line, sizeof(line), file))
     {
       char *newline = strchr(line, '\n');
-      if (newline) {
-          *newline = '\0';
+      if (newline)
+      {
+        *newline = '\0';
       }
       results.push_back(line);
     }
@@ -37,15 +38,15 @@ vector<string> readFromFile()
   return results;
 }
 
-SuffixTrie* addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
+SuffixTrie *addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
 {
-  cout << "suffix " << suffix;
+  // cout << "suffix " << suffix;
 
   SuffixTrie *treeCursor = root.get();
 
   for (int i = 0; i < suffix.size(); i++)
   {
-    cout << "level of tree " << treeCursor->letter << endl;
+    // cout << "level of tree " << treeCursor->letter << endl;
     int j = -1;
     bool found = false;
     int numberOfNodes = treeCursor->children.size();
@@ -65,12 +66,12 @@ SuffixTrie* addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
 
     if (found)
     {
-      cout << " found elem at " << j << "==" << treeCursor->children.at(j)->letter << " moving one level below" << endl;
+      // cout << " found elem at " << j << "==" << treeCursor->children.at(j)->letter << " moving one level below" << endl;
       treeCursor = treeCursor->children.at(j).get();
     }
     else
     {
-      cout << " not found on level inserting " << suffix.at(i) << endl;
+      // cout << " not found on level inserting " << suffix.at(i) << endl;
 
       (treeCursor->children).push_back(make_unique<SuffixTrie>(suffix.at(i)));
       treeCursor = (treeCursor->children).back().get();
@@ -87,30 +88,34 @@ SuffixTrie* addToTrie(string suffix, unique_ptr<SuffixTrie> &root)
 
 void addTermToSuffixTrie(string substring, unique_ptr<SuffixTrie> &root)
 {
-  SuffixTrie* lastFullString;
+  SuffixTrie *lastFullString;
 
   for (int i = 0; i < substring.size(); i++)
   {
-    SuffixTrie* lastElementInSubtree = addToTrie(substring.substr(i, substring.size()), root);
+    SuffixTrie *lastElementInSubtree = addToTrie(substring.substr(i, substring.size()), root);
 
     if (i == 0)
     {
       lastFullString = lastElementInSubtree;
-    } else if (i==1) {
+    }
+    else if (i == 1)
+    {
       lastFullString->longestProperSuffix = unique_ptr<SuffixTrie>(lastElementInSubtree);
     }
-    cout << endl;
+    // cout << endl;
   }
 }
 
-void buildTrie(vector<string> substrings, unique_ptr<SuffixTrie> &root) {
+void buildTrie(vector<string> substrings, unique_ptr<SuffixTrie> &root)
+{
   for (int i = 0; i < substrings.size(); i++)
   {
     addTermToSuffixTrie(substrings.at(i), root);
   }
 }
 
-void combineAndCheckSubstrings(vector<string> substrings) {
+void combineAndCheckSubstrings(vector<string> substrings, unique_ptr<SuffixTrie> &trieRoot)
+{
   int k = substrings.at(0).size(); // length of initial substrings
 
   for (int i = 0; i < substrings.size(); i++)
@@ -118,12 +123,13 @@ void combineAndCheckSubstrings(vector<string> substrings) {
     for (int j = 0; j < substrings.size(); j++)
     {
       string candidate = substrings[i] + substrings[j];
-      checkAllBorderSpanningSubstringsAreInLibrary(&candidate, k, &substrings);
+      // checkAllBorderSpanningSubstringsAreInLibraryBruteForce(&candidate, k, &substrings);
+      checkAllBorderSpanningSubstringsAreInLibraryUsingTrie(&candidate, k, &substrings, trieRoot);
     }
   }
 }
 
-bool checkAllBorderSpanningSubstringsAreInLibrary(string *searchCandidate, int substringLength, const vector<string> *substrings)
+bool checkAllBorderSpanningSubstringsAreInLibraryBruteForce(string *searchCandidate, int substringLength, const vector<string> *substrings)
 {
   bool found = false;
   for (int start = 1; start < substringLength; start++)
@@ -132,16 +138,88 @@ bool checkAllBorderSpanningSubstringsAreInLibrary(string *searchCandidate, int s
 
     for (int l = 0; l < (*substrings).size(); l++)
     {
-      // TODO: compare with initial substrings, print match if any
       if ((*substrings).at(l) == borderSpanningSubstring)
       {
-        // cout << " *found* ";
         found = true;
         break;
       }
     }
-    // if (found) break;
-    // cout << "|";
+    if (found)
+    {
+      cout << "found " << borderSpanningSubstring << " from " << *searchCandidate << endl;
+      break;
+    }
   }
   return found;
+}
+
+bool checkAllBorderSpanningSubstringsAreInLibraryUsingTrie(string *searchCandidate, int substringLength, const vector<string> *substrings, unique_ptr<SuffixTrie> &trieRoot)
+{
+  // cout << " searching for " << *searchCandidate << endl;
+
+  SuffixTrie *treeCursor = trieRoot.get();
+  bool foundAllSubstringsInTree = true;
+  int cursorOnSubstring = 0;
+
+  for (int start = 1; start < substringLength; start++)
+  {
+    bool endOfSearchStringReached = false;
+    bool letterNotFound = false;
+    int i = 0;
+
+    const string borderSpanningSubstring = (*searchCandidate).substr(start, substringLength);
+    // cout << "borders spanning string " << borderSpanningSubstring << endl;
+
+    while (!endOfSearchStringReached && !letterNotFound)
+    {
+      bool foundOnLevel = false;
+      char currentSearchLetter = borderSpanningSubstring.at(cursorOnSubstring);
+      // cout << " current search letter " << currentSearchLetter << endl;
+      // Try to travel the trie depth-first to find all the letters in the search candidate
+      if (treeCursor->children.size() > 0)
+      {
+        if (treeCursor->children.at(i)->letter != currentSearchLetter)
+        {
+          i++;
+
+          if (i == treeCursor->children.size())
+          {
+            foundAllSubstringsInTree = false;
+            letterNotFound = true;
+            // cout << "substring " << borderSpanningSubstring << " was NOT found" << endl;
+          }
+        }
+        else
+        {
+          // cout << "found letter " << currentSearchLetter << " going to next tree level " << endl;
+          cursorOnSubstring++;
+          treeCursor = treeCursor->children.at(i).get();
+          i = 0;
+        }
+      }
+      else
+      {
+        foundAllSubstringsInTree = false;
+        letterNotFound = true;
+      }
+
+      if (cursorOnSubstring == borderSpanningSubstring.size())
+      {
+        endOfSearchStringReached = true;
+        treeCursor = treeCursor->longestProperSuffix.get();
+        cursorOnSubstring = substringLength - 1;
+        // cout << "substring " << borderSpanningSubstring << " was found, moving to immediate suffix " << endl;
+      }
+    }
+    if (letterNotFound)
+    {
+      break;
+    }
+  }
+
+  if (foundAllSubstringsInTree) {
+    cout << "found all substrings of " << *searchCandidate << endl;
+  }
+
+  return foundAllSubstringsInTree;
 }

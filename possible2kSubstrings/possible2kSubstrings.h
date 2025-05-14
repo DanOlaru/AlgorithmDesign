@@ -22,8 +22,11 @@ struct SuffixTrie {
 #endif
 
 
-bool checkAllBorderSpanningSubstringsAreInLibrary(string *searchCandidate, int substringLength, const vector<string> *substrings);
+bool checkAllBorderSpanningSubstringsAreInLibraryBruteForce(string *searchCandidate, int substringLength, const vector<string> *substrings);
+bool checkAllBorderSpanningSubstringsAreInLibraryUsingTrie(string *searchCandidate, int substringLength, const vector<string> *substrings, unique_ptr<SuffixTrie> &trieRoot);
+
 vector<string> readFromFile();
 void addTermToSuffixTrie(string substring, unique_ptr<SuffixTrie> &existingTrie);
 void buildTrie(vector<string> substrings, unique_ptr<SuffixTrie> &root);
-void combineAndCheckSubstrings(vector<string> substrings);
+// void combineAndCheckSubstrings(vector<string> substrings);
+void combineAndCheckSubstrings(vector<string> substrings, unique_ptr<SuffixTrie> &trieRoot);
