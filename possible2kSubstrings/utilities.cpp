@@ -5,8 +5,10 @@
 #include "possible2kSubstrings.h"
 #include <memory>
 #include <stdlib.h>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 vector<string> readFromFile()
 {
@@ -141,7 +143,13 @@ void buildTrie(vector<string> substrings, unique_ptr<SuffixTrie> &root)
 
 void combineAndCheckSubstrings(vector<string> substrings, unique_ptr<SuffixTrie> &trieRoot)
 {
+  FILE *file;
+  file = fopen("output.txt", "w");
+
   int k = substrings.at(0).size(); // length of initial substrings
+
+  // Start time
+  auto start = high_resolution_clock::now();
 
   for (int i = 0; i < substrings.size(); i++)
   {
@@ -149,9 +157,24 @@ void combineAndCheckSubstrings(vector<string> substrings, unique_ptr<SuffixTrie>
     {
       string candidate = substrings[i] + substrings[j];
       // checkAllBorderSpanningSubstringsAreInLibraryBruteForce(&candidate, k, &substrings);
-      checkAllBorderSpanningSubstringsAreInLibraryUsingTrie(&candidate, k, &substrings, trieRoot);
+      bool wasFound = checkAllBorderSpanningSubstringsAreInLibraryUsingTrie(&candidate, k, &substrings, trieRoot);
+
+      if (wasFound)
+      {
+        fprintf(file, "%s\n", candidate.c_str());
+      }
     }
   }
+
+  // End time
+  auto end = high_resolution_clock::now();
+
+  // Duration in microseconds
+  auto duration = duration_cast<microseconds>(end - start);
+  cout << "Execution time: " << duration.count() / 1000000 << " seconds" << endl;
+
+  fprintf(file, "Execution time: %ld seconds\n", duration.count() / 1000000);
+  fclose(file);
 }
 
 bool checkAllBorderSpanningSubstringsAreInLibraryBruteForce(string *searchCandidate, int substringLength, const vector<string> *substrings)
@@ -266,7 +289,7 @@ void generateTestData(int k, int n)
 
   for (int i = 0; i < n; i++)
   {
-    char currentTestString[k+1];
+    char currentTestString[k + 1];
 
     for (int j = 0; j < k; j++)
     {
@@ -275,8 +298,7 @@ void generateTestData(int k, int n)
     }
     currentTestString[k] = '\0';
 
-    cout << "At iteration " << i << " generated " << currentTestString << endl;
-    // fprintf(file, "Hello, world!\n");
+    // cout << "At iteration " << i << " generated " << currentTestString << endl;
     fprintf(file, "%s\n", currentTestString);
   }
 

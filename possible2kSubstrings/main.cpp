@@ -5,18 +5,13 @@
 #include <vector>
 #include <string>
 #include "utilities.cpp"
-#include <chrono>
 
 using namespace std;
-using namespace std::chrono;
 
 int main(int argc, char const *argv[])
 {
-
-  generateTestData(10, 50000);
-
-  // Start time
-  auto start = high_resolution_clock::now();
+  // generateTestData(9, 50000);
+  generateTestData(9, 15000);
 
   const vector<string> substrings = readFromFile();
   auto root = make_unique<SuffixTrie>('r');
@@ -25,11 +20,4 @@ int main(int argc, char const *argv[])
   buildTrie(substrings, root);
 
   combineAndCheckSubstrings(substrings, root);
-
-  // End time
-  auto end = high_resolution_clock::now();
-
-  // Duration in microseconds
-  auto duration = duration_cast<microseconds>(end - start);
-  cout << "Execution time: " << duration.count() / 1000000 << " seconds" << endl;
 }
