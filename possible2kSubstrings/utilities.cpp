@@ -4,6 +4,7 @@
 #include <string>
 #include "possible2kSubstrings.h"
 #include <memory>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -239,9 +240,45 @@ bool checkAllBorderSpanningSubstringsAreInLibraryUsingTrie(string *searchCandida
     }
   }
 
-  if (foundAllSubstringsInTree) {
+  if (foundAllSubstringsInTree)
+  {
     cout << "Potential 2k substring: " << *searchCandidate << endl;
   }
 
   return foundAllSubstringsInTree;
+}
+
+void generateTestData(int k, int n)
+{
+  char alphabet[] = {'A', 'B', 'C', 'T'};
+
+  FILE *file;
+  // file = fopen("auto_input.txt", "w");
+  file = fopen("input.txt", "w");
+
+  if (file == NULL)
+  {
+    perror("Error opening file");
+    return;
+  }
+
+  srand(time(NULL));
+
+  for (int i = 0; i < n; i++)
+  {
+    char currentTestString[k+1];
+
+    for (int j = 0; j < k; j++)
+    {
+      int randomIndex = rand() % 4;
+      currentTestString[j] = alphabet[randomIndex];
+    }
+    currentTestString[k] = '\0';
+
+    cout << "At iteration " << i << " generated " << currentTestString << endl;
+    // fprintf(file, "Hello, world!\n");
+    fprintf(file, "%s\n", currentTestString);
+  }
+
+  fclose(file);
 }

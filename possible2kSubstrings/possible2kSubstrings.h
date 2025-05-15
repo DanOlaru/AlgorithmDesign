@@ -30,3 +30,5 @@ void addTermToSuffixTrie(string substring, unique_ptr<SuffixTrie> &existingTrie)
 void buildTrie(vector<string> substrings, unique_ptr<SuffixTrie> &root);
 // void combineAndCheckSubstrings(vector<string> substrings);
 void combineAndCheckSubstrings(vector<string> substrings, unique_ptr<SuffixTrie> &trieRoot);
+
+void generateTestData(int k, int n);
