@@ -106,11 +106,35 @@ void addTermToSuffixTrie(string substring, unique_ptr<SuffixTrie> &root)
   }
 }
 
+void addTermAndLongestSuffixToTrie(string substring, unique_ptr<SuffixTrie> &root)
+{
+  SuffixTrie *lastFullString;
+
+  for (int i = 0; i < substring.size(); i++)
+  {
+    if (i < 2)
+    {
+      SuffixTrie *lastElementInSubtree = addToTrie(substring.substr(i, substring.size()), root);
+
+      if (i == 0)
+      {
+        lastFullString = lastElementInSubtree;
+      }
+      else if (i == 1)
+      {
+        lastFullString->longestProperSuffix = lastElementInSubtree;
+      }
+    }
+    // cout << endl;
+  }
+}
+
 void buildTrie(vector<string> substrings, unique_ptr<SuffixTrie> &root)
 {
   for (int i = 0; i < substrings.size(); i++)
   {
-    addTermToSuffixTrie(substrings.at(i), root);
+    // addTermToSuffixTrie(substrings.at(i), root);
+    addTermAndLongestSuffixToTrie(substrings.at(i), root);
   }
 }
 
@@ -155,8 +179,6 @@ bool checkAllBorderSpanningSubstringsAreInLibraryBruteForce(string *searchCandid
 
 bool checkAllBorderSpanningSubstringsAreInLibraryUsingTrie(string *searchCandidate, int substringLength, const vector<string> *substrings, unique_ptr<SuffixTrie> &trieRoot)
 {
-  // cout << " searching for " << *searchCandidate << endl;
-
   SuffixTrie *treeCursor = trieRoot.get();
   bool foundAllSubstringsInTree = true;
   int cursorOnSubstring = 0;
@@ -218,7 +240,7 @@ bool checkAllBorderSpanningSubstringsAreInLibraryUsingTrie(string *searchCandida
   }
 
   if (foundAllSubstringsInTree) {
-    cout << "found all substrings of " << *searchCandidate << endl;
+    cout << "Potential 2k substring: " << *searchCandidate << endl;
   }
 
   return foundAllSubstringsInTree;
