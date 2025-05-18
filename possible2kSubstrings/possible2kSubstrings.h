@@ -19,8 +19,6 @@ struct SuffixTrie {
     SuffixTrie(char c, bool final = false) : letter(c), isFinal(final) {}
 };
 
-#endif
-
 
 bool checkAllBorderSpanningSubstringsAreInLibraryBruteForce(string *searchCandidate, int substringLength, const vector<string> *substrings);
 bool checkAllBorderSpanningSubstringsAreInLibraryUsingTrie(string *searchCandidate, int substringLength, const vector<string> *substrings, unique_ptr<SuffixTrie> &trieRoot);
@@ -32,3 +30,5 @@ void buildTrie(vector<string> substrings, unique_ptr<SuffixTrie> &root);
 void combineAndCheckSubstrings(vector<string> substrings, unique_ptr<SuffixTrie> &trieRoot);
 
 void generateTestData(int k, int n);
+
+#endif
