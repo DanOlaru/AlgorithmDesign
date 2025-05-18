@@ -4,7 +4,6 @@ abc*-
 ab*c+
 abc+*
 abc+d+*
-ab*c+
 ab+c-
 ab*c/
 abc*+
