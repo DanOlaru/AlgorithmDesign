@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstring>
 #include <string>
+#include "expressionParser.h"
 
 using namespace std;
 
@@ -27,7 +28,7 @@ vector<string> readExpressionsFromFile()
   return expressions;
 }
 
-void writeResultsToFile(vector<string> parsed)
+void writeResultsToFile(vector<string> parsed, string outputFile)
 {
   FILE *outputFle = fopen("output.txt", "w");
 
@@ -118,3 +119,95 @@ string parseToPostfixNotation(string expressionInInfixNotation)
   // cout << " -> " << parsed << endl;
   return parsed;
 }
+
+int lookupVariableValue(char variable)
+{
+  // TODO: also read from file
+  if (variable == 'a')
+  {
+    return 1;
+  }
+  else if (variable == 'b')
+  {
+    return 2;
+  }
+  else if (variable == 'c')
+  {
+    return 3;
+  }
+  else if (variable == 'd')
+  {
+    return 4;
+  }
+  else if (variable == 'e')
+  {
+    return 5;
+  }
+  else if (variable == 'f')
+  {
+    return 6;
+  }
+
+  return -1;
+}
+
+int evaluatePostfixExpression(string expression)
+{
+  string operandStack = "";
+  int result = 0;
+  bool startedParsing = false;
+
+  vector<int> operandValuesStack;
+
+  for (int i = 0; i < expression.size(); i++)
+  {
+    char current = expression.at(i);
+    cout << " at index " << i << " we have " << current << " and " << operandStack << endl;
+
+    if (current == '+' || current == '-' || current == '*' || current == '/')
+    {
+      
+      int operand_two = operandValuesStack.back();
+      operandValuesStack.pop_back();
+      int operand_one = operandValuesStack.back();
+      operandValuesStack.pop_back();
+
+      switch (current)
+      {
+      case '+':
+        result = operand_one + operand_two;
+        break;
+      case '-':
+        result = operand_one - operand_two;
+        break;
+      case '*':
+        result = operand_one * operand_two;
+        break;
+      case '/':
+        result = operand_one / operand_two;
+        break;
+      }
+      operandValuesStack.push_back(result);
+    }
+    else
+    {
+      operandValuesStack.push_back(lookupVariableValue(current));
+    }
+  }
+
+  // return operandStack.back();
+  return result;
+}
+
+vector<int> evaluateExpressions(vector<string> postfixExpressions)
+{
+  vector<int> results;
+
+  for (int i = 0; i < postfixExpressions.size(); i++)
+  {
+    results.push_back(evaluatePostfixExpression(postfixExpressions.at(i)));
+    cout << "result of " << postfixExpressions.at(i) << " equals " << results.back() << endl;
+  }
+  return results;
+}
+
