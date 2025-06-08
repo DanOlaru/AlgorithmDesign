@@ -53,7 +53,9 @@ void insertIntoTree(EnhancedBinaryTree *root, int elementToInsert)
 
   while (goingLeft ? currentNode->left != NULL : currentNode->right != NULL)
   {
-    if (goingLeft && currentNode->predecessor && (currentNode->predecessor->key < elementToInsert))
+    if (goingLeft &&
+        ((!currentNode->predecessor) ||
+         (currentNode->predecessor && (currentNode->predecessor->key < elementToInsert))))
     {
       currentNode->predecessor = newNode;
     }
@@ -72,11 +74,14 @@ void insertIntoTree(EnhancedBinaryTree *root, int elementToInsert)
 
   if (goingLeft)
   {
-    if (currentNode->predecessor && (currentNode->predecessor->key < elementToInsert))
+    // TODO: duplicate code, improve solution
+    if ((!currentNode->predecessor) ||
+        (currentNode->predecessor && (currentNode->predecessor->key < elementToInsert)))
     {
       currentNode->predecessor = newNode;
     }
     currentNode->left = newNode;
+    newNode->successor = currentNode;
   }
   else
   {
@@ -84,9 +89,9 @@ void insertIntoTree(EnhancedBinaryTree *root, int elementToInsert)
     currentNode->right = newNode;
   }
 
-  if (immediatePredecessor->key < newNode->key)
+  if (immediatePredecessor->key < elementToInsert)
   {
     immediatePredecessor->successor = newNode;
-    newNode->predecessor = immediatePredecessor;
+    // newNode->predecessor = immediatePredecessor;
   }
 }
