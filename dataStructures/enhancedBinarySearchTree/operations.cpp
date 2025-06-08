@@ -30,8 +30,6 @@ vector<int> readFromFile()
 
 EnhancedBinaryTree *createBinaryTreeFromVector(vector<int> inputArray)
 {
-  cout << "SIZE " << inputArray.size() << endl;
-
   EnhancedBinaryTree *rootNode = new EnhancedBinaryTree();
   rootNode->key = inputArray.at(0);
 
@@ -46,13 +44,21 @@ EnhancedBinaryTree *createBinaryTreeFromVector(vector<int> inputArray)
 void insertIntoTree(EnhancedBinaryTree *root, int elementToInsert)
 {
   EnhancedBinaryTree *newNode, *currentNode, *immediatePredecessor;
-  currentNode = root;
+  immediatePredecessor = currentNode = root;
 
   bool goingLeft = currentNode->key >= elementToInsert;
 
+  newNode = new EnhancedBinaryTree();
+  newNode->key = elementToInsert;
+
   while (goingLeft ? currentNode->left != NULL : currentNode->right != NULL)
   {
-    if (currentNode->key >= elementToInsert)
+    if (goingLeft && currentNode->predecessor && (currentNode->predecessor->key < elementToInsert))
+    {
+      currentNode->predecessor = newNode;
+    }
+
+    if (goingLeft)
     {
       currentNode = currentNode->left;
     }
@@ -64,13 +70,23 @@ void insertIntoTree(EnhancedBinaryTree *root, int elementToInsert)
     goingLeft = currentNode->key >= elementToInsert;
   }
 
-  newNode = new EnhancedBinaryTree();
-  newNode->key = elementToInsert;
-
-  if (currentNode->key >= elementToInsert) {
+  if (goingLeft)
+  {
+    if (currentNode->predecessor && (currentNode->predecessor->key < elementToInsert))
+    {
+      currentNode->predecessor = newNode;
+    }
     currentNode->left = newNode;
-  } else {
+  }
+  else
+  {
+    immediatePredecessor = currentNode;
     currentNode->right = newNode;
   }
-  // immediatePredecessor->successor = currentNode;
+
+  if (immediatePredecessor->key < newNode->key)
+  {
+    immediatePredecessor->successor = newNode;
+    newNode->predecessor = immediatePredecessor;
+  }
 }
