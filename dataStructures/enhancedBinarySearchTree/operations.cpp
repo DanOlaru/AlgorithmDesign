@@ -41,57 +41,60 @@ EnhancedBinaryTree *createBinaryTreeFromVector(vector<int> inputArray)
   return rootNode;
 }
 
-void insertIntoTree(EnhancedBinaryTree *root, int elementToInsert)
+void insertIntoTree(EnhancedBinaryTree *root, int valueToInsert)
 {
-  EnhancedBinaryTree *newNode, *currentNode, *immediatePredecessor;
-  immediatePredecessor = currentNode = root;
+  EnhancedBinaryTree *nodeToInsert, *currentNode;
+  currentNode = root;
 
-  bool goingLeft = currentNode->key >= elementToInsert;
+  bool goingLeft, inserted = false;
 
-  newNode = new EnhancedBinaryTree();
-  newNode->key = elementToInsert;
+  nodeToInsert = new EnhancedBinaryTree();
+  nodeToInsert->key = valueToInsert;
 
-  while (goingLeft ? currentNode->left != NULL : currentNode->right != NULL)
+  do
   {
-    if (goingLeft &&
-        ((!currentNode->predecessor) ||
-         (currentNode->predecessor && (currentNode->predecessor->key < elementToInsert))))
-    {
-      currentNode->predecessor = newNode;
-    }
+    goingLeft = currentNode->key >= valueToInsert;
 
     if (goingLeft)
     {
-      currentNode = currentNode->left;
+      if (!currentNode->predecessor || (currentNode->predecessor->key < valueToInsert))
+      {
+        currentNode->predecessor = nodeToInsert;
+      }
+
+      if (!(nodeToInsert->successor) || (currentNode->key > nodeToInsert->successor->key))
+      {
+        nodeToInsert->successor = currentNode;
+      }
+
+      if (currentNode->left != NULL)
+      {
+        currentNode = currentNode->left;
+      }
+      else
+      {
+        currentNode->left = nodeToInsert;
+        nodeToInsert->successor = currentNode;
+        inserted = true;
+      }
     }
     else
     {
-      immediatePredecessor = currentNode;
-      currentNode = currentNode->right;
+      nodeToInsert->predecessor = currentNode;
+      if (currentNode->right != NULL)
+      {
+        if (currentNode->successor->key > nodeToInsert->key ) {
+          currentNode->successor = nodeToInsert;
+        }
+        currentNode = currentNode->right;
+      }
+      else
+      {
+        currentNode->successor = nodeToInsert;
+        currentNode->right = nodeToInsert;
+        inserted = true;
+      }
     }
-    goingLeft = currentNode->key >= elementToInsert;
-  }
 
-  if (goingLeft)
-  {
-    // TODO: duplicate code, improve solution
-    if ((!currentNode->predecessor) ||
-        (currentNode->predecessor && (currentNode->predecessor->key < elementToInsert)))
-    {
-      currentNode->predecessor = newNode;
-    }
-    currentNode->left = newNode;
-    newNode->successor = currentNode;
-  }
-  else
-  {
-    immediatePredecessor = currentNode;
-    currentNode->right = newNode;
-  }
-
-  if (immediatePredecessor->key < elementToInsert)
-  {
-    immediatePredecessor->successor = newNode;
-    // newNode->predecessor = immediatePredecessor;
-  }
+  } while (!inserted);
 }
