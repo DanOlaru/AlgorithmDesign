@@ -62,7 +62,7 @@ void insertIntoTree(EnhancedBinaryTree *root, int valueToInsert)
         currentNode->predecessor = nodeToInsert;
       }
 
-      if (!(nodeToInsert->successor) || (currentNode->key > nodeToInsert->successor->key))
+      if (!(nodeToInsert->successor) || (currentNode->key < nodeToInsert->successor->key))
       {
         nodeToInsert->successor = currentNode;
       }
@@ -74,23 +74,24 @@ void insertIntoTree(EnhancedBinaryTree *root, int valueToInsert)
       else
       {
         currentNode->left = nodeToInsert;
-        nodeToInsert->successor = currentNode;
         inserted = true;
       }
     }
     else
     {
       nodeToInsert->predecessor = currentNode;
+
+      if (!(currentNode->successor) || currentNode->successor->key > nodeToInsert->key)
+      {
+        currentNode->successor = nodeToInsert;
+      }
+
       if (currentNode->right != NULL)
       {
-        if (currentNode->successor->key > nodeToInsert->key ) {
-          currentNode->successor = nodeToInsert;
-        }
         currentNode = currentNode->right;
       }
       else
       {
-        currentNode->successor = nodeToInsert;
         currentNode->right = nodeToInsert;
         inserted = true;
       }
