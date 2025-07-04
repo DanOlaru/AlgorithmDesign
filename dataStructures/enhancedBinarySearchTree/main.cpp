@@ -6,5 +6,9 @@ int main(int argc, char const *argv[])
 
   EnhancedBinaryTree *rootOfTree = createBinaryTreeFromVector(inputArray);
 
+  printTreeDepthFirst(rootOfTree);
+
+  destructTree(rootOfTree);
+
   return 0;
 }

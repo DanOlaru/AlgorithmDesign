@@ -99,3 +99,31 @@ void insertIntoTree(EnhancedBinaryTree *root, int valueToInsert)
 
   } while (!inserted);
 }
+
+template <typename Func>
+void travelTreeAndRunOp(EnhancedBinaryTree *root, Func op)
+{
+  if (root->left != NULL)
+  {
+    travelTreeAndRunOp(root->left, op);
+  }
+  if (root->right != NULL)
+  {
+    travelTreeAndRunOp(root->right, op);
+  }
+
+  op(root);
+}
+
+void destructTree(EnhancedBinaryTree *root)
+{
+  travelTreeAndRunOp(root, [](EnhancedBinaryTree *root) {
+    delete root;
+    root = nullptr; });
+}
+
+void printTreeDepthFirst(EnhancedBinaryTree *root) {
+  travelTreeAndRunOp(root, [] (EnhancedBinaryTree *root) {
+    cout << "Node " << root->key << endl;
+  } );
+}

@@ -13,3 +13,7 @@ struct EnhancedBinaryTree {
 vector<int> readFromFile();
 EnhancedBinaryTree* createBinaryTreeFromVector(vector<int> inputArray);
 void insertIntoTree(EnhancedBinaryTree *root, int elementToInsert);
+
+void printTreeDepthFirst(EnhancedBinaryTree *root);
+
+void destructTree(EnhancedBinaryTree *root);
