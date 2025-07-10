@@ -11,6 +11,8 @@ struct EnhancedBinaryTree {
 };
 
 vector<int> readFromFile();
+vector<int> readFromFile(string fileName);
+
 EnhancedBinaryTree* createBinaryTreeFromVector(vector<int> inputArray);
 void insertIntoTree(EnhancedBinaryTree *root, int elementToInsert);
 

@@ -2,11 +2,10 @@
 #include <string.h>
 #include "enhancedBinaryTree.h"
 
-vector<int> readFromFile()
+vector<int> readFromFile(string fileName)
 {
-
   FILE *inputFile;
-  inputFile = fopen("inputArray.txt", "r");
+  inputFile = fopen(fileName.c_str(), "r");
   char line[256];
   vector<int> inputArray;
 
@@ -26,6 +25,10 @@ vector<int> readFromFile()
   }
 
   return inputArray;
+}
+
+vector<int> readFromFile() {
+  return readFromFile("inputArray.txt");
 }
 
 EnhancedBinaryTree *createBinaryTreeFromVector(vector<int> inputArray)
