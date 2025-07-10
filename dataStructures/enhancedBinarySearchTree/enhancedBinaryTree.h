@@ -14,7 +14,8 @@ vector<int> readFromFile();
 vector<int> readFromFile(string fileName);
 
 EnhancedBinaryTree* createBinaryTreeFromVector(vector<int> inputArray);
-void insertIntoTree(EnhancedBinaryTree *root, int elementToInsert);
+void insertValueIntoTree(EnhancedBinaryTree *root, int elementToInsert);
+void insertNodeIntoTree(EnhancedBinaryTree *root, EnhancedBinaryTree *newElement);
 
 void printTreeDepthFirst(EnhancedBinaryTree *root);
 

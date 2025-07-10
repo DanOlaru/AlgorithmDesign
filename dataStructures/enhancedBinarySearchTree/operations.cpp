@@ -2,20 +2,16 @@
 #include <string.h>
 #include "enhancedBinaryTree.h"
 
-vector<int> readFromFile(string fileName)
-{
+vector<int> readFromFile(string fileName) {
   FILE *inputFile;
   inputFile = fopen(fileName.c_str(), "r");
   char line[256];
   vector<int> inputArray;
 
-  if (inputFile != NULL)
-  {
-    while (fgets(line, sizeof(line), inputFile))
-    {
+  if (inputFile != NULL) {
+    while (fgets(line, sizeof(line), inputFile)) {
       char *token = strtok(line, " ");
-      while (token != NULL)
-      {
+      while (token != NULL) {
         inputArray.push_back(stoi(token));
         token = strtok(NULL, " ");
       }
@@ -31,95 +27,86 @@ vector<int> readFromFile() {
   return readFromFile("inputArray.txt");
 }
 
-EnhancedBinaryTree *createBinaryTreeFromVector(vector<int> inputArray)
-{
+EnhancedBinaryTree *createBinaryTreeFromVector(vector<int> inputArray) {
   EnhancedBinaryTree *rootNode = new EnhancedBinaryTree();
   rootNode->key = inputArray.at(0);
 
-  for (int i = 1; i < inputArray.size(); i++)
-  {
-    insertIntoTree(rootNode, inputArray.at(i));
+  for (int i = 1; i < inputArray.size(); i++) {
+    insertValueIntoTree(rootNode, inputArray.at(i));
   }
 
   return rootNode;
 }
 
-void insertIntoTree(EnhancedBinaryTree *root, int valueToInsert)
-{
+void insertValueIntoTree(EnhancedBinaryTree *root, int valueToInsert) {
+  EnhancedBinaryTree *nodeToInsert;
+  nodeToInsert = new EnhancedBinaryTree();
+  nodeToInsert->key = valueToInsert;
+
+  insertNodeIntoTree(root, nodeToInsert);
+}
+
+void insertNodeIntoTree(EnhancedBinaryTree *root, EnhancedBinaryTree *newElement) {
   EnhancedBinaryTree *nodeToInsert, *currentNode;
   currentNode = root;
 
   bool goingLeft, inserted = false;
 
   nodeToInsert = new EnhancedBinaryTree();
-  nodeToInsert->key = valueToInsert;
+  nodeToInsert->key = newElement->key;
 
-  do
-  {
-    goingLeft = currentNode->key >= valueToInsert;
+  do {
+    goingLeft = currentNode->key >= nodeToInsert->key;
 
-    if (goingLeft)
-    {
-      if (!currentNode->predecessor || (currentNode->predecessor->key < valueToInsert))
-      {
+    if (goingLeft) {
+      if (!currentNode->predecessor || (currentNode->predecessor->key < nodeToInsert->key)) {
         currentNode->predecessor = nodeToInsert;
       }
 
-      if (!(nodeToInsert->successor) || (currentNode->key < nodeToInsert->successor->key))
-      {
+      if (!(nodeToInsert->successor) || (currentNode->key < nodeToInsert->successor->key)) {
         nodeToInsert->successor = currentNode;
       }
 
-      if (currentNode->left != NULL)
-      {
+      if (currentNode->left != NULL) {
         currentNode = currentNode->left;
       }
-      else
-      {
+      else {
         currentNode->left = nodeToInsert;
         inserted = true;
       }
     }
-    else
-    {
+    else {
       nodeToInsert->predecessor = currentNode;
 
-      if (!(currentNode->successor) || currentNode->successor->key > nodeToInsert->key)
-      {
+      if (!(currentNode->successor) || currentNode->successor->key > nodeToInsert->key) {
         currentNode->successor = nodeToInsert;
       }
 
-      if (currentNode->right != NULL)
-      {
+      if (currentNode->right != NULL) {
         currentNode = currentNode->right;
       }
-      else
-      {
+      else {
         currentNode->right = nodeToInsert;
         inserted = true;
       }
     }
-
   } while (!inserted);
 }
 
 template <typename Func>
 void travelTreeAndRunOp(EnhancedBinaryTree *root, Func op)
 {
-  if (root->left != NULL)
-  {
+  if (root->left != NULL) {
     travelTreeAndRunOp(root->left, op);
   }
-  if (root->right != NULL)
-  {
+  if (root->right != NULL) {
     travelTreeAndRunOp(root->right, op);
   }
 
   op(root);
 }
 
-void destructTree(EnhancedBinaryTree *root)
-{
+void destructTree(EnhancedBinaryTree *root) {
   travelTreeAndRunOp(root, [](EnhancedBinaryTree *root) {
     delete root;
     root = nullptr; });
