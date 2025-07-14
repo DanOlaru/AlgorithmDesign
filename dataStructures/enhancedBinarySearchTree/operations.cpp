@@ -43,10 +43,10 @@ void insertValueIntoTree(EnhancedBinaryTree *root, int valueToInsert) {
   nodeToInsert = new EnhancedBinaryTree();
   nodeToInsert->key = valueToInsert;
 
-  insertNodeIntoTree(root, nodeToInsert);
+  insertNodeIntoTreeAndReturnImmediateParent(root, nodeToInsert);
 }
 
-void insertNodeIntoTree(EnhancedBinaryTree *root, EnhancedBinaryTree *newElement) {
+EnhancedBinaryTree* insertNodeIntoTreeAndReturnImmediateParent(EnhancedBinaryTree *root, EnhancedBinaryTree *newElement) {
   EnhancedBinaryTree *nodeToInsert, *currentNode;
   currentNode = root;
 
@@ -74,8 +74,7 @@ void insertNodeIntoTree(EnhancedBinaryTree *root, EnhancedBinaryTree *newElement
         currentNode->left = nodeToInsert;
         inserted = true;
       }
-    }
-    else {
+    } else {
       nodeToInsert->predecessor = currentNode;
 
       if (!(currentNode->successor) || currentNode->successor->key > nodeToInsert->key) {
@@ -91,6 +90,8 @@ void insertNodeIntoTree(EnhancedBinaryTree *root, EnhancedBinaryTree *newElement
       }
     }
   } while (!inserted);
+
+  return currentNode;
 }
 
 template <typename Func>
@@ -116,4 +117,45 @@ void printTreeDepthFirst(EnhancedBinaryTree *root) {
   travelTreeAndRunOp(root, [] (EnhancedBinaryTree *root) {
     cout << "Node " << root->key << endl;
   } );
+}
+
+EnhancedBinaryTree* slideDownSubTree(EnhancedBinaryTree* parent, EnhancedBinaryTree* first) {
+  EnhancedBinaryTree* cursor = first;
+
+    if (parent->key > cursor->key) {
+      // cursor inserted to the left of parent -> slide down its right subtree
+      while (cursor->right != NULL && parent->key > cursor->right->key) {
+        cursor = cursor->right;
+      };
+    } else {
+      // cursor inserted to the right of parent -> slide down its left subtree
+      while (cursor->left != NULL && parent->key <= cursor->left->key) {
+        cursor = cursor->left;
+      };
+    }
+
+    return cursor;
+}
+
+EnhancedBinaryTree* mergeTrees(EnhancedBinaryTree *rootA, EnhancedBinaryTree *rootB) {
+  EnhancedBinaryTree *cursor = rootA, *currentRootParent;
+
+  do {
+    currentRootParent = insertNodeIntoTreeAndReturnImmediateParent(rootB, cursor);
+    bool deleteRight = currentRootParent->key > cursor->key;
+    cursor = slideDownSubTree(currentRootParent, cursor);
+
+    EnhancedBinaryTree* saveCursor;
+    // break connection with child
+    if (deleteRight) {
+      saveCursor = cursor->right;
+      cursor->right = NULL;
+    } else {
+      saveCursor = cursor->left;
+      cursor->left = NULL;
+    }
+    cursor = saveCursor;
+  } while (cursor != NULL);
+
+  return cursor;
 }
