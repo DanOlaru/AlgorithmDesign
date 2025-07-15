@@ -27,6 +27,32 @@ vector<int> readFromFile() {
   return readFromFile("inputArray.txt");
 }
 
+vector<vector<int>> readMultipleFromFile(string fileName) {
+  FILE *inputFile;
+  inputFile = fopen(fileName.c_str(), "r");
+  char line[256];
+
+  vector<vector<int>> output;
+  vector<int> inputArray;
+
+  if (inputFile != NULL) {
+    while (fgets(line, sizeof(line), inputFile)) {
+      char *token = strtok(line, " ");
+      while (token != NULL) {
+        inputArray.push_back(stoi(token));
+        token = strtok(NULL, " ");
+      }
+
+      output.push_back(inputArray);
+      inputArray.clear();
+    }
+
+    fclose(inputFile);
+  }
+
+  return output;
+}
+
 EnhancedBinaryTree *createBinaryTreeFromVector(vector<int> inputArray) {
   EnhancedBinaryTree *rootNode = new EnhancedBinaryTree();
   rootNode->key = inputArray.at(0);
@@ -158,4 +184,36 @@ EnhancedBinaryTree* mergeTrees(EnhancedBinaryTree *rootA, EnhancedBinaryTree *ro
   } while (cursor != NULL);
 
   return cursor;
+}
+
+// TODO: implement non-recursive variant
+bool treesAreEqual(EnhancedBinaryTree *rootA, EnhancedBinaryTree *rootB) {
+
+  if (rootA->key != rootB->key) {
+    return false;
+  }
+
+  bool aLeftNonNull = rootA->left != NULL;
+  bool aRightNonNull = rootA->right != NULL;
+  bool bLeftNonNull = rootB->left != NULL;
+  bool bRightNonNull = rootB->right != NULL;
+
+  bool leftSideNonNull = aLeftNonNull && bLeftNonNull;
+  bool rightSideNonNull = aRightNonNull && bRightNonNull;
+
+  if (leftSideNonNull && rightSideNonNull) {
+    return treesAreEqual(rootA->left, rootB->left) && treesAreEqual(rootA->right, rootB->right);
+  } else if (leftSideNonNull) {
+    if (rootA->right == rootB->right) {
+      return treesAreEqual(rootA->left, rootB->left);
+    }
+  } else if (rightSideNonNull) {
+    if (rootA->left == rootB->left) {
+      return treesAreEqual(rootA->right, rootB->right);
+    }
+  }  else if (leftSideNonNull && rightSideNonNull) {
+    return true;
+  }
+
+  return true;
 }
