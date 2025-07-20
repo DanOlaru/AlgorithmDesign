@@ -188,32 +188,13 @@ EnhancedBinaryTree* mergeTrees(EnhancedBinaryTree *rootA, EnhancedBinaryTree *ro
 
 // TODO: implement non-recursive variant
 bool treesAreEqual(EnhancedBinaryTree *rootA, EnhancedBinaryTree *rootB) {
+  if (rootA == NULL) {
+    return rootB == NULL;
+  }
 
   if (rootA->key != rootB->key) {
     return false;
   }
 
-  bool aLeftNonNull = rootA->left != NULL;
-  bool aRightNonNull = rootA->right != NULL;
-  bool bLeftNonNull = rootB->left != NULL;
-  bool bRightNonNull = rootB->right != NULL;
-
-  bool leftSideNonNull = aLeftNonNull && bLeftNonNull;
-  bool rightSideNonNull = aRightNonNull && bRightNonNull;
-
-  if (leftSideNonNull && rightSideNonNull) {
-    return treesAreEqual(rootA->left, rootB->left) && treesAreEqual(rootA->right, rootB->right);
-  } else if (leftSideNonNull) {
-    if (rootA->right == rootB->right) {
-      return treesAreEqual(rootA->left, rootB->left);
-    }
-  } else if (rightSideNonNull) {
-    if (rootA->left == rootB->left) {
-      return treesAreEqual(rootA->right, rootB->right);
-    }
-  }  else if (leftSideNonNull && rightSideNonNull) {
-    return true;
-  }
-
-  return true;
+  return treesAreEqual(rootA->left, rootB->left) && treesAreEqual(rootA->right, rootB->right);
 }
