@@ -72,6 +72,14 @@ void insertValueIntoTree(EnhancedBinaryTree *root, int valueToInsert) {
   insertNodeIntoTreeAndReturnImmediateParent(root, nodeToInsert);
 }
 
+void insertValueIntoTreeSimplified(EnhancedBinaryTree *root, int valueToInsert) {
+  EnhancedBinaryTree *nodeToInsert;
+  nodeToInsert = new EnhancedBinaryTree();
+  nodeToInsert->key = valueToInsert;
+
+  insertNodeIntoTreeWithPredecessorAndSuccessor(root, nodeToInsert);
+}
+
 EnhancedBinaryTree* insertNodeIntoTreeAndReturnImmediateParent(EnhancedBinaryTree *root, EnhancedBinaryTree *newElement) {
   EnhancedBinaryTree *nodeToInsert, *currentNode;
   currentNode = root;
@@ -186,15 +194,101 @@ EnhancedBinaryTree* mergeTrees(EnhancedBinaryTree *rootA, EnhancedBinaryTree *ro
   return cursor;
 }
 
-// TODO: implement non-recursive variant
+string displayInfoOnNode(EnhancedBinaryTree *node) {
+  string result;
+  if (node) {
+    if (node->key) { result += " key " + std::to_string(node->key) + " | "; };
+    if (node->predecessor && node->predecessor->key) { result += " pred " + std::to_string(node->predecessor->key) + " | "; }
+    if (node->successor && node->successor && node->successor->key) {result += " succ " + std::to_string(node->successor->key) + " | ";}
+  }
+
+  return result;
+}
+
+bool predAndSuccAreEqual(EnhancedBinaryTree *nodeA, EnhancedBinaryTree *nodeB) {
+  bool equal = true;
+  if (nodeA->predecessor == NULL) {
+    equal = equal && nodeB->predecessor == NULL;
+  } else {
+    equal = equal && nodeA->predecessor->key == nodeB->predecessor->key;
+  }
+
+  if (nodeA->successor == NULL) {
+    equal = equal && nodeB->successor == NULL;
+  } else {
+    equal = equal && nodeA->successor->key == nodeB->successor->key;
+  }
+
+  return equal;
+}
+
 bool treesAreEqual(EnhancedBinaryTree *rootA, EnhancedBinaryTree *rootB) {
   if (rootA == NULL) {
     return rootB == NULL;
   }
 
-  if (rootA->key != rootB->key) {
+  if (rootA->key != rootB->key || !predAndSuccAreEqual(rootA, rootB) ) {
+    cout << "difference found A: " << displayInfoOnNode(rootA) << " | B: " << displayInfoOnNode(rootB) << endl;
     return false;
   }
 
   return treesAreEqual(rootA->left, rootB->left) && treesAreEqual(rootA->right, rootB->right);
+}
+
+// TODO: implement non-recursive variant
+bool treesAreEqualNonRecursive(EnhancedBinaryTree *rootA, EnhancedBinaryTree *rootB) {
+  return false;
+}
+
+EnhancedBinaryTree* insertNodeIntoTreeWithPredecessorAndSuccessor(EnhancedBinaryTree *root, EnhancedBinaryTree *newElement) {
+
+  EnhancedBinaryTree *nodeToInsert, *cursor;
+  cursor = root;
+
+  bool goingLeft;
+
+  nodeToInsert = new EnhancedBinaryTree();
+  nodeToInsert->key = newElement->key;
+
+  do {
+    goingLeft = cursor->key >= nodeToInsert->key;
+
+    if (goingLeft) {
+      nodeToInsert->successor = cursor;
+      if (cursor->left != NULL) {
+        cursor = cursor->left;
+      } else {
+        cursor->left = nodeToInsert;
+
+        // set predecessor's successor and adjust former predecessor
+        if (cursor->predecessor) {
+          if (cursor->predecessor->successor) {
+            cursor->predecessor->successor = nodeToInsert;
+          }
+          nodeToInsert->predecessor = cursor->predecessor;
+        }
+        cursor->predecessor = nodeToInsert;
+      }
+    } else {
+      nodeToInsert->predecessor = cursor;
+      if (cursor->right != NULL) {
+        cursor = cursor->right;
+      } else {
+        cursor->right = nodeToInsert;
+
+        //set successor's predecessor and adjust former successor
+        if (cursor->successor) {
+          if (cursor->successor->predecessor) {
+            cursor->successor->predecessor = nodeToInsert;
+          }
+          nodeToInsert->successor = cursor->successor;
+        }
+        cursor->successor = nodeToInsert;
+      }
+    }
+  } while (cursor->left != nodeToInsert && cursor->right != nodeToInsert);
+
+
+  // delete nodeToInsert; // TODO: why doesn't this work?
+  return cursor;
 }

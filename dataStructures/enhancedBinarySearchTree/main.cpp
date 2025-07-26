@@ -28,12 +28,23 @@ int main(int argc, char const *argv[]) {
   // destructTree(mergedTree);
 
 
-  // #3
-  // TODO: read from same file on separate lines
+  // #3 read from same file on separate lines
+  // vector<vector<int>> inputArrays = readMultipleFromFile("./dataInputs/myArrays.txt");
+
+  // EnhancedBinaryTree *treeA = createBinaryTreeFromVector(inputArrays.at(0));
+  // EnhancedBinaryTree *treeB = createBinaryTreeFromVector(inputArrays.at(1));
+
+  // cout << "Resulting trees are identick ? " << treesAreEqual(treeA, treeB) << endl;
+
+  // destructTree(treeA);
+  // destructTree(treeB);
+
+
+  // #4 check if trees constructed with the two different construction methods are identical
   vector<vector<int>> inputArrays = readMultipleFromFile("./dataInputs/myArrays.txt");
 
-  EnhancedBinaryTree *treeA = createBinaryTreeFromVector(inputArrays.at(0));
-  EnhancedBinaryTree *treeB = createBinaryTreeFromVector(inputArrays.at(1));
+  EnhancedBinaryTree *treeA = createBinaryTreeFromVectorGeneric(inputArrays.at(0), insertValueIntoTree);
+  EnhancedBinaryTree *treeB = createBinaryTreeFromVectorGeneric(inputArrays.at(0), insertValueIntoTreeSimplified);
 
   cout << "Resulting trees are identick ? " << treesAreEqual(treeA, treeB) << endl;
 
