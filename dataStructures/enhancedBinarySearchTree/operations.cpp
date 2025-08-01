@@ -262,9 +262,7 @@ EnhancedBinaryTree* insertNodeIntoTreeWithPredecessorAndSuccessor(EnhancedBinary
 
         // set predecessor's successor and adjust former predecessor
         if (cursor->predecessor) {
-          if (cursor->predecessor->successor) {
-            cursor->predecessor->successor = nodeToInsert;
-          }
+          cursor->predecessor->successor = nodeToInsert;
           nodeToInsert->predecessor = cursor->predecessor;
         }
         cursor->predecessor = nodeToInsert;
@@ -278,9 +276,7 @@ EnhancedBinaryTree* insertNodeIntoTreeWithPredecessorAndSuccessor(EnhancedBinary
 
         //set successor's predecessor and adjust former successor
         if (cursor->successor) {
-          if (cursor->successor->predecessor) {
-            cursor->successor->predecessor = nodeToInsert;
-          }
+          cursor->successor->predecessor = nodeToInsert;
           nodeToInsert->successor = cursor->successor;
         }
         cursor->successor = nodeToInsert;
@@ -288,7 +284,5 @@ EnhancedBinaryTree* insertNodeIntoTreeWithPredecessorAndSuccessor(EnhancedBinary
     }
   } while (cursor->left != nodeToInsert && cursor->right != nodeToInsert);
 
-
-  // delete nodeToInsert; // TODO: why doesn't this work?
   return cursor;
 }
