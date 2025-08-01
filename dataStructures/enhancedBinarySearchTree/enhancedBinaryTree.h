@@ -18,7 +18,7 @@ vector<vector<int>> readMultipleFromFile(string fileName);
 EnhancedBinaryTree* createBinaryTreeFromVector(vector<int> inputArray);
 
 void insertValueIntoTree(EnhancedBinaryTree *root, int elementToInsert);
-void insertValueIntoTreeSimplified(EnhancedBinaryTree *root, int valueToInsert);
+EnhancedBinaryTree* insertValueIntoTreeSimplified(EnhancedBinaryTree *root, int valueToInsert);
 
 EnhancedBinaryTree* insertNodeIntoTreeAndReturnImmediateParent(EnhancedBinaryTree *root, EnhancedBinaryTree *newElement);
 
@@ -28,7 +28,7 @@ void printTreeDepthFirst(EnhancedBinaryTree *root);
 
 void destructTree(EnhancedBinaryTree *root);
 
-EnhancedBinaryTree* mergeTrees(EnhancedBinaryTree *rootA, EnhancedBinaryTree *rootB);
+void mergeTrees(EnhancedBinaryTree *rootA, EnhancedBinaryTree *rootB);
 
 bool treesAreEqual(EnhancedBinaryTree *rootA, EnhancedBinaryTree *rootB);
 

@@ -10,22 +10,20 @@ int main(int argc, char const *argv[]) {
   // destructTree(rootOfTree);
 
   //#2
-  // vector<int> inputArrayA = readFromFile("inputArray.txt");
-  // vector<int> inputArrayB = readFromFile("inputArray_new.txt");
+  vector<vector<int>> inputArrays = readMultipleFromFile("./dataInputs/treesToMerge.txt");
 
-  // EnhancedBinaryTree *treeA = createBinaryTreeFromVector(inputArrayA);
-  // EnhancedBinaryTree *treeB = createBinaryTreeFromVector(inputArrayB);
+  EnhancedBinaryTree *treeA = createBinaryTreeFromVectorGeneric(inputArrays.at(0), insertValueIntoTreeSimplified);
+  EnhancedBinaryTree *treeB = createBinaryTreeFromVectorGeneric(inputArrays.at(1), insertValueIntoTreeSimplified);
 
-  // printTreeDepthFirst(treeA);
-  // cout << "separation between trees" << endl;
-  // printTreeDepthFirst(treeB);
+  printTreeDepthFirst(treeA);
+  cout << "separation between trees" << endl;
+  printTreeDepthFirst(treeB);
 
-  // EnhancedBinaryTree *mergedTree = mergeTrees(treeA, treeB);
-  // printTreeDepthFirst(mergedTree);
+  mergeTrees(treeA, treeB);
+  printTreeDepthFirst(treeA);
 
-  // destructTree(treeA);
-  // destructTree(treeB);
-  // destructTree(mergedTree);
+  destructTree(treeA);
+  destructTree(treeB);
 
 
   // #3 read from same file on separate lines
@@ -41,15 +39,15 @@ int main(int argc, char const *argv[]) {
 
 
   // #4 check if trees constructed with the two different construction methods are identical
-  vector<vector<int>> inputArrays = readMultipleFromFile("./dataInputs/myArrays.txt");
+  // vector<vector<int>> inputArrays = readMultipleFromFile("./dataInputs/myArrays.txt");
 
-  EnhancedBinaryTree *treeA = createBinaryTreeFromVectorGeneric(inputArrays.at(0), insertValueIntoTree);
-  EnhancedBinaryTree *treeB = createBinaryTreeFromVectorGeneric(inputArrays.at(0), insertValueIntoTreeSimplified);
+  // EnhancedBinaryTree *treeA = createBinaryTreeFromVectorGeneric(inputArrays.at(0), insertValueIntoTree);
+  // EnhancedBinaryTree *treeB = createBinaryTreeFromVectorGeneric(inputArrays.at(0), insertValueIntoTreeSimplified);
 
-  cout << "Resulting trees are identick ? " << treesAreEqual(treeA, treeB) << endl;
+  // cout << "Resulting trees are identick ? " << treesAreEqual(treeA, treeB) << endl;
 
-  destructTree(treeA);
-  destructTree(treeB);
+  // destructTree(treeA);
+  // destructTree(treeB);
 
   return 0;
 }
