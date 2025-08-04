@@ -20,9 +20,11 @@ int main(int argc, char const *argv[]) {
   printTreeDepthFirst(treeB);
 
   mergeTrees(treeA, treeB);
-  printTreeDepthFirst(treeA);
 
-  destructTree(treeA);
+  cout << "Print merged trees" << endl;
+  printTreeDepthFirst(treeB);
+
+  // destructTree(treeA);
   destructTree(treeB);
 
 

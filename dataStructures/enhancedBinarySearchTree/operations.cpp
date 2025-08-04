@@ -1,4 +1,3 @@
-
 #include <string.h>
 #include "enhancedBinaryTree.h"
 
@@ -153,9 +152,77 @@ void printTreeDepthFirst(EnhancedBinaryTree *root) {
   } );
 }
 
+EnhancedBinaryTree* followRightSubtreeToLastLowerThanSuccAndDetachFromTree(EnhancedBinaryTree* root) {
+  if (root->successor == NULL) {
+    return NULL;
+  }
+
+  EnhancedBinaryTree* cursor = root, *lastParent;;
+
+  // TODO : what if equal case?
+  while (cursor != NULL && cursor->key < root->successor->key) {
+    lastParent = cursor;
+    cursor = cursor->right;
+  }
+
+  //Detach child from last parent
+  lastParent->right = NULL;
+
+  return cursor;
+}
+
+EnhancedBinaryTree* followLeftSubtreeToLastHigherThanPredAndDetachFromTree(EnhancedBinaryTree* root) {
+  if (root->predecessor == NULL) {
+    return NULL;
+  }
+
+  EnhancedBinaryTree* cursor = root, *lastParent;
+
+  while (cursor != NULL && cursor->key > root->predecessor->key) {
+    lastParent = cursor;
+    cursor = cursor->left;
+  };
+
+  //Detach child from last parent
+  lastParent->left = NULL;
+
+  return cursor;
+}
+
+
+EnhancedBinaryTree* slideDownOppositeSubTreeAndDetachFromTree(EnhancedBinaryTree* parent, EnhancedBinaryTree* firstChild) {
+  EnhancedBinaryTree* cursor = firstChild, *lastParent;
+  bool goRight = false;
+
+  if (parent->key > firstChild->key) {
+    goRight = true;
+    // cursor inserted to the left of parent -> slide down its right subtree
+    while (cursor != NULL && parent->key > cursor->key) {
+      lastParent = cursor;
+      cursor = cursor->right;
+    };
+  } else {
+    // cursor inserted to the right of parent -> slide down its left subtree
+    while (cursor != NULL && parent->key <= cursor->key) {
+      lastParent = cursor;
+      cursor = cursor->left;
+    };
+  }
+
+  // TODO: disambiguate NULL cases and same as firstChild
+  if (cursor != NULL) {
+    if (goRight) {
+      lastParent->right = NULL;
+    } else {
+      lastParent->left = NULL;
+    }
+  }
+  return cursor;
+}
+
 // merge while preserving pred/succ relationships
 void mergeTrees(EnhancedBinaryTree *rootToInsert, EnhancedBinaryTree *hostTreeRoot) {
-  EnhancedBinaryTree *cursor, *spliceRoot, *nodeToDetach;
+  EnhancedBinaryTree *cursor, *spliceRoot, *nodeToDetach, *formerPred; // TODO: presumably former succ also
 
   vector<EnhancedBinaryTree*> toMergeStack;
   toMergeStack.push_back(rootToInsert);
@@ -172,82 +239,22 @@ void mergeTrees(EnhancedBinaryTree *rootToInsert, EnhancedBinaryTree *hostTreeRo
       // travel as far down as the pred, and save anything below to stack, save + break connection with child
       // reverse logic for right insertion
 
-      EnhancedBinaryTree* smallestLeftmostChildBiggerThanPred = followLeftSubtreeToLastHigherThanPred(spliceRoot);
-      if (smallestLeftmostChildBiggerThanPred) {
-        nodeToDetach = smallestLeftmostChildBiggerThanPred->left;
-        smallestLeftmostChildBiggerThanPred->left = NULL;
-        toMergeStack.push_back(nodeToDetach);
+      EnhancedBinaryTree* largestLeftmostChildSmallerThanPred = followLeftSubtreeToLastHigherThanPredAndDetachFromTree(cursor);
+      if (largestLeftmostChildSmallerThanPred) {
+        toMergeStack.push_back(largestLeftmostChildSmallerThanPred);
       }
     } else {
-      EnhancedBinaryTree* largestRightmostChildSmallerThanSucc = followRightSubtreeToLastLowerThanSucc(spliceRoot);
-      if (largestRightmostChildSmallerThanSucc) {
-        nodeToDetach = largestRightmostChildSmallerThanSucc->right;
-        largestRightmostChildSmallerThanSucc->right = NULL;
-        toMergeStack.push_back(nodeToDetach);
+      EnhancedBinaryTree* smallestRightmostChildSmallerThanSucc = followRightSubtreeToLastLowerThanSuccAndDetachFromTree(cursor);
+      if (smallestRightmostChildSmallerThanSucc) {
+        toMergeStack.push_back(smallestRightmostChildSmallerThanSucc);
       }
     }
 
-    EnhancedBinaryTree* lastCompatibleChildFromOppositeSubtree = slideDownOppositeSubTree(spliceRoot, cursor);
-    if (lastCompatibleChildFromOppositeSubtree) {
-      if (insertedLeft) {
-        nodeToDetach = lastCompatibleChildFromOppositeSubtree->right;
-        lastCompatibleChildFromOppositeSubtree->right = NULL;
-      } else {
-        nodeToDetach = lastCompatibleChildFromOppositeSubtree->left;
-        lastCompatibleChildFromOppositeSubtree->left = NULL;
-      }
-
-      toMergeStack.push_back(nodeToDetach);
+    EnhancedBinaryTree* firstIncompatibleChildFromOppositeSubtree = slideDownOppositeSubTreeAndDetachFromTree(spliceRoot, cursor);
+    if (firstIncompatibleChildFromOppositeSubtree) {
+      toMergeStack.push_back(firstIncompatibleChildFromOppositeSubtree);
     }
   } while (toMergeStack.size() > 0);
-}
-
-EnhancedBinaryTree* followRightSubtreeToLastLowerThanSucc(EnhancedBinaryTree* root) {
-  if (root->successor == NULL) {
-    return NULL;
-  }
-
-  EnhancedBinaryTree* cursor = root;
-
-  while (cursor != NULL && cursor->right && cursor->right->key <= root->successor->key) {
-    cursor = cursor->right;
-  }
-
-  return cursor;
-}
-
-EnhancedBinaryTree* followLeftSubtreeToLastHigherThanPred(EnhancedBinaryTree* root) {
-  if (root->predecessor == NULL) {
-    return NULL;
-  }
-
-  EnhancedBinaryTree* cursor = root;
-
-  while (cursor != NULL && cursor->left != NULL && cursor->left->key >= root->predecessor->key) {
-    cursor = cursor->left;
-  };
-
-  return cursor;
-}
-
-EnhancedBinaryTree* slideDownOppositeSubTree(EnhancedBinaryTree* parent, EnhancedBinaryTree* firstChild) {
-  EnhancedBinaryTree* cursor;
-
-  if (parent->key > firstChild->key) {
-    // cursor inserted to the left of parent -> slide down its right subtree
-    cursor = firstChild->right;
-    while (cursor != NULL && parent->key > cursor->key) {
-      cursor = cursor->right;
-    };
-  } else {
-    // cursor inserted to the right of parent -> slide down its left subtree
-    cursor = firstChild->left;
-    while (cursor != NULL && parent->key <= cursor->key) {
-      cursor = cursor->left;
-    };
-  }
-
-  return cursor;
 }
 
 string displayInfoOnNode(EnhancedBinaryTree *node) {
@@ -296,15 +303,12 @@ bool treesAreEqualNonRecursive(EnhancedBinaryTree *rootA, EnhancedBinaryTree *ro
   return false;
 }
 
-EnhancedBinaryTree* insertNodeIntoTreeWithPredecessorAndSuccessor(EnhancedBinaryTree *root, EnhancedBinaryTree *newElement) {
+EnhancedBinaryTree* insertNodeIntoTreeWithPredecessorAndSuccessor(EnhancedBinaryTree *root, EnhancedBinaryTree *nodeToInsert) {
 
-  EnhancedBinaryTree *nodeToInsert, *cursor;
+  EnhancedBinaryTree *cursor;
   cursor = root;
 
   bool goingLeft;
-
-  nodeToInsert = new EnhancedBinaryTree();
-  nodeToInsert->key = newElement->key;
 
   do {
     goingLeft = cursor->key >= nodeToInsert->key;
