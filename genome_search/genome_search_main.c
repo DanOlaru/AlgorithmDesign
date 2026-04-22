@@ -2,7 +2,7 @@
 #include <string.h>
 #include "genome_search.h"
 
-int state_machine[256][4];
+int state_machine[MAX_LEN][4];
 
 int main(int argc, char const *argv[])
 {
@@ -13,9 +13,9 @@ int main(int argc, char const *argv[])
     return 1;
   }
 
-  char search_string[256];
-  char genome[256];
-  char buffer[256];
+  char search_string[MAX_LEN];
+  char genome[MAX_LEN];
+  char buffer[MAX_LEN];
 
   int counter = 0;
   while (fgets(buffer, sizeof(buffer), file) != NULL)
@@ -106,7 +106,7 @@ void scan_search_string(const char *search_string)
   }
 }
 
-void print_state_machine(const char *search_string, int state_machine[256][4])
+void print_state_machine(const char *search_string, int state_machine[MAX_LEN][4])
 {
   printf("  ");
   for (size_t i = 0; i < strlen(search_string); i++)
@@ -127,7 +127,7 @@ void print_state_machine(const char *search_string, int state_machine[256][4])
   }
 }
 
-int match_found(const char *genome, const char *search_string, int state_machine[256][4])
+int match_found(const char *genome, const char *search_string, int state_machine[MAX_LEN][4])
 {
   int genome_index = 0;
   int search_string_index = 0;
