@@ -19,6 +19,8 @@ void bubble_up(priority_queue *pq, size_t index);
 void swap(priority_queue *pq, size_t first, size_t second);
 
 void make_heap(priority_queue *pq, element_type input[], size_t input_length);
+void make_heap_optimized(priority_queue *pq, element_type input[], size_t input_length);
+
 element_type extract_min(priority_queue *pq);
 void percolate(priority_queue *pq, size_t index);
 

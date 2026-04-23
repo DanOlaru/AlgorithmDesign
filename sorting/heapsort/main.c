@@ -111,6 +111,21 @@ void make_heap(priority_queue *pq, element_type input[], size_t input_length)
   }
 }
 
+void make_heap_optimized(priority_queue *pq, element_type input[], size_t input_length)
+{
+  pq->size = input_length;
+
+  for (int i = 0; i < input_length; i++)
+  {
+    pq->queue[i] = input[i];
+  }
+
+  for (int i = input_length - 1; i >= 0; i--)
+  {
+    percolate(pq, i);
+  }
+}
+
 element_type extract_min(priority_queue *pq)
 {
   element_type min = NULL;
@@ -131,10 +146,8 @@ element_type extract_min(priority_queue *pq)
 void heapsort(element_type input_array[], size_t input_length)
 {
   priority_queue pq;
-  make_heap(&pq, input_array, input_length);
-
-  printf("heaps ");
-  print_array(pq.queue, pq.size);
+  // make_heap(&pq, input_array, input_length);
+  make_heap_optimized(&pq, input_array, input_length);
 
   for (int i = 0; i < input_length; i++)
   {
@@ -146,12 +159,12 @@ void percolate(priority_queue *pq, size_t index)
 {
   int min_index = index;
 
-  if ((left_child(index) <= pq->size) && (pq->queue[left_child(index)] < pq->queue[min_index]))
+  if ((left_child(index) < pq->size) && (pq->queue[left_child(index)] < pq->queue[min_index]))
   {
     min_index = left_child(index);
   }
 
-  if ((right_child(index) <= pq->size) && (pq->queue[right_child(index)] < pq->queue[min_index]))
+  if ((right_child(index) < pq->size) && (pq->queue[right_child(index)] < pq->queue[min_index]))
   {
     min_index = right_child(index);
   }
